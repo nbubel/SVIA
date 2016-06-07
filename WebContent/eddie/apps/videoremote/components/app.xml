@@ -1,0 +1,76 @@
+<app>
+
+	<view id="#homepage">
+		<controller id="FsListController">
+			<template>homepage/itemlist.mst</template>
+			<fields>title,img,mp4,bordercolor</fields>
+			<mouseovercss>menumouseover</mouseovercss>
+		</controller>
+	</view>
+
+	<view id="#mainscreencontroller">
+		<template>mainscreencontroller/index.mst</template>
+		<controller id="MainscreenController">
+		</controller>
+	</view>
+	<view id="#screen">
+		<template>screen.mst</template>
+		<controller id="ScreenController">
+		</controller>
+	</view>
+
+	<view id="#video1">
+		<template>video.mst</template>
+		<controller id="VideoController">			
+			<javascript>VideoController.js</javascript>
+			<videonode>/domain/senso/tmp/videocontrollerapp/video/1</videonode>
+			<masterclock>/domain/senso/tmp/videocontrollerapp/videostatus/1</masterclock>
+		</controller>
+	</view>
+	
+	<view id="#audio1">
+		<template>audio/audio.mst</template>
+		<controller id="AudioController">			
+			<javascript>audio/AudioController.js</javascript>
+			<mp3url>http://images1.noterik.com/rbb/rbb_synctest_aeng.mp3</mp3url>
+			<masterclock>/domain/senso/tmp/videocontrollerapp/videostatus/1</masterclock>
+		</controller>
+	</view>
+	
+	<view id="#related">
+		<template>RelatedController.mst</template>
+		<controller id="RelatedController">		
+			<javascript>RelatedController.js</javascript>
+			<annotationslist>/domain/senso/tmp/videocontrollerapp/video/1/annotations</annotationslist>
+		</controller>
+	</view>
+	
+	<view id="#annotations">
+		<template>AnnotationController.mst</template>
+		<controller id="AnnotationController">	
+			<javascript>AnnotationController.js</javascript>		
+			<annotationslist>/domain/senso/tmp/videocontrollerapp/video/1/annotations</annotationslist>
+		</controller>
+	</view>
+	
+	<view id="#videoremotecontroller">
+		<template>videoremotecontroller.mst</template>	
+		<controller id="VideoRemoteController">			
+			<videonode>/domain/senso/tmp/videocontrollerapp/video/1</videonode>
+		</controller>
+	</view>
+	<view id="#remoteseek">
+		<template>SliderController.mst</template>
+		<controller id="SliderController">			
+			<javascript>SliderController.js</javascript>
+			<videonode>/domain/senso/tmp/videocontrollerapp/video/1</videonode>
+		</controller>
+	</view>
+	<view id="#remotevolume">
+		<template>SliderController.mst</template>
+		<controller id="SliderController">			
+			<javascript>SliderController.js</javascript>
+			<videonode>/domain/senso/tmp/videocontrollerapp/video/1</videonode>
+		</controller>
+	</view>
+</app>

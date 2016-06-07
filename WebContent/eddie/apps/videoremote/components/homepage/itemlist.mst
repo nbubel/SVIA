@@ -1,0 +1,7 @@
+<ul>
+{{#nodes}}<li id="{{targetid}}_{{id}}" class="item_{{targetid}}">
+<div class="homepage_title"><b>{{id}}</b></div>
+<div class="homepage_info">{{title}} {{mp4}}</div>
+<img class="homepage_img" src="{{img}}" style="border: solid 3px #{{bordercolor}}" />
+</li>{{/nodes}}
+</ul>
