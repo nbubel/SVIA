@@ -1,3 +1,10 @@
+body{
+	overflow: hidden;
+}
+
+#synctime {
+	display: none;
+}
 
 table,
 td,
@@ -535,6 +542,10 @@ font-size: 3vw;
 	margin-top: 2vw;
 }
 
+.btn:focus {
+  background-color: #ff9e80;
+}
+
 .blank{
 	visibility: hidden;
 }
@@ -550,5 +561,21 @@ font-size: 3vw;
 	width: 12vw;
 }
 
+#mainscreencontroller_pointerConfirm, #mainscreencontroller_importConfirm,
+	#mainscreencontroller_clearConfirm {
+	display: none;
+	position: absolute;
+	background-color: #ffffff;
+	margin: -4vw 0vw 0vw -47vw;
+	padding: 10vw 10vw 40vw 10vw;
+	z-index: 10;
+	font-size: 4vw;
+	padding-top: 30vw;
+	left: 50%;
+	min-width: 100%;
+}
 
+.rightButton{
+	margin-left: 4vw;
+}
 

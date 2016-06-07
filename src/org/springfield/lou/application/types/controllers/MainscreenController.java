@@ -1,29 +1,33 @@
 package org.springfield.lou.application.types.controllers;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.json.simple.JSONObject;
 import org.springfield.fs.FSList;
 import org.springfield.fs.FSListManager;
 import org.springfield.fs.Fs;
 import org.springfield.fs.FsNode;
-import org.springfield.fs.FsTimeLine;
 import org.springfield.lou.application.types.VideoremoteApplication;
-import org.springfield.lou.controllers.FsListController;
 import org.springfield.lou.controllers.Html5Controller;
 import org.springfield.lou.screen.Screen;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+/**
+ * @author Niels Bubel, Rundfunk Berlin-Brandenburg (RBB), Innovationsprojekte
+ * @version 7.2 - final version, 31.05.2016
+ * 
+ *          Controller for the third SVIA-Device: the mainscreen controller
+ * 
+ *          here are implemented the methods for: play, stop, navigate in all
+ *          directions, import new videos from xml-file, delete all videos,
+ *          reset
+ *
+ */
 public class MainscreenController extends Html5Controller {
 
 	FSList fsPointer;
@@ -32,9 +36,12 @@ public class MainscreenController extends Html5Controller {
 	FSList fsStart = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false);
 	List<FsNode> nodesStart = fsStart.getNodes();
 	int sizeStart = fsStart.size();
-	
-	
+	static int gridPosition = 1;
 
+	/**
+	 * Loads the basic html stuff for the controller device
+	 * 
+	 */
 	public void attach(String sel) {
 		selector = sel;
 		JSONObject data = new JSONObject();
@@ -55,12 +62,14 @@ public class MainscreenController extends Html5Controller {
 
 	}
 
-	public void removeAllVideos(Screen s, JSONObject data) {
+	/**
+	 * Clears the video data base completely
+	 * 
+	 */
+	public void removeAllVideos() {
 
 		System.out.println("Remove all videos!");
-
 		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false);
-
 		List<FsNode> nodes = fslist.getNodes();
 		for (int i = 0; i < nodes.size(); i++) {
 			System.out.println("Node out of DB " + i + ": " + nodes.get(i).asXML());
@@ -68,10 +77,13 @@ public class MainscreenController extends Html5Controller {
 					.deleteNode("/domain/senso/user/rbb/collection/homepage/video/" + nodes.get(i).getId());
 			System.out.println("Deleted succsessfull?: " + deleted);
 		}
-
 	}
 
-	public void importXML(Screen s, JSONObject data) {
+	/**
+	 * Importer to parse video metadata from a XML-file to the SVIA data base
+	 * 
+	 */
+	public void importXML() {
 		System.out.println("Update - Liste!");
 
 		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false);
@@ -82,11 +94,11 @@ public class MainscreenController extends Html5Controller {
 			System.out.println("Node " + i + ": " + nodes.get(i).asXML());
 		}
 
-		// Version1: without mp3 -
-		// webapps/ROOT/eddie/apps/videoremote/img/20160229-wall-videos-german.xml
-		// webapps/ROOT/eddie/apps/videoremote/img/201600318-wall-videos-german.xml
+		// File to import
 		File file = new File("webapps/ROOT/eddie/apps/videoremote/img/20160419-wall-videos.xml");
 
+		// Parse the XML-File to get the XML-elements and write them into the
+		// data base as nodes
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = null;
 		Document doc = null;
@@ -96,10 +108,8 @@ public class MainscreenController extends Html5Controller {
 			try {
 				doc = dbFactory.newDocumentBuilder().parse(file);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ParserConfigurationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} catch (SAXException e) {
@@ -116,7 +126,7 @@ public class MainscreenController extends Html5Controller {
 
 		for (int i = 0; i < doc.getElementsByTagName("titel").getLength(); i++) {
 			FsNode node = new FsNode("video");
-			//german version
+			// german version
 			node.setProperty("title", doc.getElementsByTagName("titel").item(i).getTextContent());
 			node.setProperty("date", doc.getElementsByTagName("datum").item(i).getTextContent());
 			node.setProperty("img", doc.getElementsByTagName("img").item(i).getTextContent());
@@ -135,10 +145,9 @@ public class MainscreenController extends Html5Controller {
 			node.setProperty("description-en", doc.getElementsByTagName("beschreibung-en").item(i).getTextContent());
 			node.setProperty("location-en", doc.getElementsByTagName("ort-en").item(i).getTextContent());
 			node.setProperty("year-en", doc.getElementsByTagName("jahr-en").item(i).getTextContent());
-			
+
 			node.setId("" + (nodes.size() + 1));
 			System.out.println("created new node: " + node.asXML());
-
 			fslist.addNode(node);
 		}
 
@@ -163,29 +172,14 @@ public class MainscreenController extends Html5Controller {
 		boolean insertedID = org.springfield.fs.Fs.insertNode(nodes2.get(0),
 				"/domain/senso/user/rbb/collection/pointer");
 		System.out.println("Insertion Pointer: " + insertedID);
-
-		/*
-		 * System.out.println("Put fslist to DB");
-		 * FSListManager.put("/domain/senso/user/rbb/collection/homepage",
-		 * fslist);
-		 */
-
-		// String bordercolor = node.getProperty("bordercolor");
-		// if (bordercolor!=null && bordercolor.equals("ffff00")) {
-		// VideoremoteApplication app =
-		// (VideoremoteApplication)screen.getApplication();
-		// app.setProperty("/videostate/"+app.masterclock +"/action",
-		// "startvideo,"+(i+1));
-		// }
 	}
 
+	/**
+	 * Starts the video on the mainscreen
+	 */
 	public void startVideo(Screen s, JSONObject data) {
-		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false); // get
-																								// the
-																								// results
-																								// from
-																								// the
-																								// database
+		// get the results from the database
+		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false);
 		List<FsNode> nodes = fslist.getNodes();
 		if (nodes != null) {
 			for (int i = 0; i < nodes.size(); i++) {
@@ -200,19 +194,22 @@ public class MainscreenController extends Html5Controller {
 		}
 	}
 
-	public void closeVideo(Screen s, JSONObject data) {
+	/**
+	 * Closes the video on the mainscreen
+	 */
+	public void closeVideo() {
 		VideoremoteApplication app = (VideoremoteApplication) screen.getApplication();
 		app.setProperty("/videostate/" + app.masterclock + "/action", "closevideo");
 	}
 
-	public void setPointer(Screen s, JSONObject data) {
+	/**
+	 * Set the pointer on the mainscreen to the first video (reset)
+	 */
+	public void setPointer() {
 		System.out.println("Set pointer to the first video");
-		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false); // get
-																								// the
-																								// results
-																								// from
-																								// the
-																								// database
+		// get the results from the database
+		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false);
+
 		List<FsNode> nodes = fslist.getNodes();
 		fsStart = fslist;
 		nodesStart = nodes;
@@ -230,15 +227,26 @@ public class MainscreenController extends Html5Controller {
 					System.out.println("SelectedVideo: " + selectedItemID);
 				} else {
 					// System.out.println("Set Bordercolor: at Node: "+ i);
-					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (i + 1), "bordercolor", "ffffff");
+					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (i + 1), "bordercolor",
+							"ffffff");
 				}
 			}
 		}
 		blockView9(selectedItemID - 1, nodes.size(), false);
 	}
 
-	public void goPrev(Screen s, JSONObject data) {
+	/**
+	 * navigates in the video grid to the video before
+	 */
+	public void goPrev() {
 		System.out.println("PREV!!");
+		System.out.println("Gridposition before move:" + gridPosition);
+		if (gridPosition > 1) {
+			gridPosition--;
+		} else if (gridPosition == 1) {
+			gridPosition = 3;
+		}
+		System.out.println("Gridposition after move:" + gridPosition);
 		// System.out.println("PREV!! ="+data.toJSONString());
 		fsPointer = FSListManager.get("/domain/senso/user/rbb/collection/pointer", false);
 		nodesPointer = fsPointer.getNodes();
@@ -269,8 +277,18 @@ public class MainscreenController extends Html5Controller {
 		blockView9(selectedItemID + 1, sizeStart, false);
 	}
 
-	public void goNext(Screen s, JSONObject data) {
+	/**
+	 * navigates in the video grid to the next video
+	 */
+	public void goNext() {
 		System.out.println("NEXT !!");
+		System.out.println("Gridposition before move:" + gridPosition);
+		if (gridPosition < 9) {
+			gridPosition++;
+		} else if (gridPosition == 9) {
+			gridPosition = 7;
+		}
+		System.out.println("Gridposition after move:" + gridPosition);
 		// System.out.println("NEXT !! ="+data.toJSONString());
 		fsPointer = FSListManager.get("/domain/senso/user/rbb/collection/pointer", false);
 		nodesPointer = fsPointer.getNodes();
@@ -301,8 +319,16 @@ public class MainscreenController extends Html5Controller {
 		blockView9(selectedItemID + 1, sizeStart, true);
 	}
 
-	public void goDown(Screen s, JSONObject data) {
+	/**
+	 * navigates in the video grid to the video down
+	 */
+	public void goDown() {
 		System.out.println("DOWN !!");
+		System.out.println("Gridposition before move:" + gridPosition);
+		if (gridPosition < 7) {
+			gridPosition = gridPosition + 3;
+		}
+		System.out.println("Gridposition after move:" + gridPosition);
 		// System.out.println("DOWN !! ="+data.toJSONString());
 		fsPointer = FSListManager.get("/domain/senso/user/rbb/collection/pointer", false);
 		nodesPointer = fsPointer.getNodes();
@@ -336,8 +362,16 @@ public class MainscreenController extends Html5Controller {
 		blockView9(selectedItemID + 1, sizeStart, true);
 	}
 
-	public void goUp(Screen s, JSONObject data) {
+	/**
+	 * navigates in the video grid to the video up
+	 */
+	public void goUp() {
 		System.out.println("UP !!");
+		System.out.println("Gridposition before move:" + gridPosition);
+		if (gridPosition > 3) {
+			gridPosition = gridPosition - 3;
+		}
+		System.out.println("Gridposition after move:" + gridPosition);
 		// System.out.println("DOWN !! ="+data.toJSONString());
 		fsPointer = FSListManager.get("/domain/senso/user/rbb/collection/pointer", false);
 		nodesPointer = fsPointer.getNodes();
@@ -365,24 +399,23 @@ public class MainscreenController extends Html5Controller {
 		blockView9(selectedItemID + 1, sizeStart, false);
 	}
 
+	/**
+	 * Shows the video grid that contains 9 videos (3 rows with 3 videos in it)
+	 * 
+	 * @param selectedItem
+	 *            videoitem with the pointer
+	 * @param itemNumbers
+	 *            total number of videoitems
+	 * @param down
+	 *            boolean if the action of navigate goes right or down
+	 */
 	public static void blockView9(int selectedItem, int itemNumbers, boolean down) {
 
-		// Grid-Part-View of 9 items ------ Start
-		// FSList fslist =
-		// FSListManager.get("/domain/senso/user/rbb/collection/homepage",
-		// false);
-		// List<FsNode> nodes = fslist.getNodes();
-		// FsNode node = null;
 		int selectedItemID = selectedItem;
 		int size = itemNumbers;
-
-		/*
-		 * for (int i = 0; i < nodes.size(); i++) { node = nodes.get(i); String
-		 * bordercolor = node.getProperty("bordercolor"); if
-		 * (bordercolor.equals("ffff00")) { selectedItemID =
-		 * Integer.parseInt(node.getId()); System.out.println(
-		 * "Found selected item with ID: " + selectedItemID); } }
-		 */
+		if ((down && gridPosition < 7) || (!down && gridPosition > 3)) {
+			return;
+		}
 
 		if (selectedItemID == -1) {
 			for (int i = 0; i < 9; i++) {
@@ -394,7 +427,6 @@ public class MainscreenController extends Html5Controller {
 				Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (i + 1), "display", "");
 			}
 			return;
-
 		}
 
 		if (selectedItemID >= 0 && selectedItemID <= 6) {
@@ -402,10 +434,6 @@ public class MainscreenController extends Html5Controller {
 			for (int j = selectedItemID - 7; j < selectedItemID + 10; j++) {
 				if (selectedItemID > -1 && j > 8) {
 					System.out.println("Hide node: " + j);
-					// org.springfield.fs.Fs.insertNode(nodes.get(j),
-					// "/domain/senso/user/rbb/collection/homepage");
-					// org.springfield.fs.Fs.deleteNode("/domain/senso/user/rbb/collection/homepage/video/"+(j+1)+"/properties/hidden");
-					// Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(nodes.size()-(2-i)),"bordercolor","ffff00");
 					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (j + 1), "display", "");
 				} else {
 					System.out.println("Display node: " + j);
@@ -415,7 +443,6 @@ public class MainscreenController extends Html5Controller {
 			for (int k = size - 9; k < size; k++) {
 				Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (k + 1), "display", "");
 			}
-
 			return;
 		}
 
@@ -424,10 +451,6 @@ public class MainscreenController extends Html5Controller {
 			for (int j = size - 9; j < size; j++) {
 				if (selectedItemID > -1 && j < (size - 9)) {
 					System.out.println("Hide node: " + j);
-					// org.springfield.fs.Fs.insertNode(nodes.get(j),
-					// "/domain/senso/user/rbb/collection/homepage");
-					// org.springfield.fs.Fs.deleteNode("/domain/senso/user/rbb/collection/homepage/video/"+(j+1)+"/properties/hidden");
-					// Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(nodes.size()-(2-i)),"bordercolor","ffff00");
 					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (j + 1), "display", "");
 				} else {
 					System.out.println("Display node: " + j);
@@ -446,10 +469,6 @@ public class MainscreenController extends Html5Controller {
 				if (selectedItemID > -1 && selectedItemID < size && (j < (selectedItemID - 7))
 						|| (j > (selectedItemID + 1))) {
 					System.out.println("Hide node: " + j);
-					// org.springfield.fs.Fs.insertNode(nodes.get(j),
-					// "/domain/senso/user/rbb/collection/homepage");
-					// org.springfield.fs.Fs.deleteNode("/domain/senso/user/rbb/collection/homepage/video/"+(j+1)+"/properties/hidden");
-					// Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(nodes.size()-(2-i)),"bordercolor","ffff00");
 					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (j + 1), "display", "");
 				} else {
 					System.out.println("Display node: " + j);
@@ -486,10 +505,6 @@ public class MainscreenController extends Html5Controller {
 				if (selectedItemID > -1 && selectedItemID < size + 1 && (j < (selectedItemID - 1))
 						|| (j > (selectedItemID + 7))) {
 					System.out.println("Hide node: " + j);
-					// org.springfield.fs.Fs.insertNode(nodes.get(j),
-					// "/domain/senso/user/rbb/collection/homepage");
-					// org.springfield.fs.Fs.deleteNode("/domain/senso/user/rbb/collection/homepage/video/"+(j+1)+"/properties/hidden");
-					// Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(nodes.size()-(2-i)),"bordercolor","ffff00");
 					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (j + 1), "display", "");
 				} else {
 					System.out.println("Display node: " + j);
@@ -525,9 +540,5 @@ public class MainscreenController extends Html5Controller {
 		else {
 			System.out.println("No matching: selectedtItem % 3: " + (selectedItemID % 3));
 		}
-
-		// Grid-Part-View of 9 items ------- End
-
 	}
-
 }

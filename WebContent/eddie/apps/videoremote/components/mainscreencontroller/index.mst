@@ -1,5 +1,21 @@
 <div class="wrapper">
 	<div class="container">
+	
+		<div id="mainscreencontroller_pointerConfirm">
+			<div id="messagePointer">Möchten Sie zum ersten Video springen?</div>
+			<button id="mainscreencontroller_pointer" class="waves-effect waves-light btn" onclick="hidePointerConfirm()">Ja</button><button class="waves-effect waves-light btn rightButton" onclick="hidePointer()">Nein</button>
+		</div>
+		
+		<div id="mainscreencontroller_importConfirm">
+			<div id="messageImport">Möchten Sie alle 244 verfügbaren Mauervideos importieren?</div>
+			<button id="mainscreencontroller_import" class="waves-effect waves-light btn" onclick="hideImportConfirm()">Ja</button><button class="waves-effect waves-light btn rightButton" onclick="hideImport()">Nein</button>
+		</div>
+		
+		<div id="mainscreencontroller_clearConfirm">
+			<div id="messageClear">Möchten Sie alle Videos in der Anwendung löschen?</div>
+			<button id="mainscreencontroller_clear" class="waves-effect waves-light btn" onclick="hideClearConfirm()">Ja</button><button class="waves-effect waves-light btn rightButton" onclick="hideClear()">Nein</button>
+		</div>
+	
 		<div id="three-columns" class="grid-container" style="display:block;">
 			<ul class="rig columns-3">
 				<li class="blank">
@@ -41,17 +57,17 @@
 				<li class="blank">
 				</li>
 				<li class="special">
-					<div id="mainscreencontroller_pointer" class="threeItems waves-effect waves-light btn deep-orange darken-4">
+					<div onclick="toStart()" class="threeItems waves-effect waves-light btn deep-orange darken-4">
 					<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/loop.svg">
 		</div>
 				</li>
 				<li class="special">
-					<div id="mainscreencontroller_import" class="threeItems waves-effect waves-light btn deep-orange darken-4">
+					<div onclick="importVideos()" class="threeItems waves-effect waves-light btn deep-orange darken-4">
 			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/import_export.svg">
 		</div>
 				</li>
 				<li class="special">
-					<div id="mainscreencontroller_clear" class="threeItems waves-effect waves-light btn deep-orange darken-4">
+					<div onclick="deleteVideos()" class="threeItems waves-effect waves-light btn deep-orange darken-4">
 			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/delete.svg">
 		</div>
 				</li>

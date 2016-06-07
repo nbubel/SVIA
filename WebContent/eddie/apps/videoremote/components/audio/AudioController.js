@@ -1,14 +1,17 @@
+/* 
+ * 
+ * Niels Bubel, Rundfunk Berlin-Brandenburg (RBB), Innovationsprojekte
+ * 7.2 - final version, 31.05.2016
+ *
+ * the audiocontroller take care that the audio on the audio-device is close to the masterclock
+ * it's the client side technic to synchronize the video and audio
+ * 
+ */
+
 var AudioController = function(options) {}; // needed for detection
 var language = null;
 
 AudioController.update = function(vars, data){
-	// get out targetid from our local vars
-	//var targetid = data['targetid'];
-	//$("#audiop").attr('autoplay', true);
-	//$("#audiop2").attr('autoplay', false);
-	//$("#audiop").attr('controls',data['controls']);
-	//$("#audiop2").attr('controls',data['controls']);
-	//$("#" + targetid).parent().append("<div id=\"notificationbox\" style=\"position: absolute; top: 0;\"></div>");
 	
 	console.log("action: " + data['action']);
 	console.log("data: " + JSON.stringify(data));
@@ -153,6 +156,7 @@ AudioController.update = function(vars, data){
 	}
 };
 
+// language chooser
 function changeToGerman() {
 	console.log("language: "+ language);
 	if (language == "german" || language == null){
@@ -178,6 +182,7 @@ function changeToGerman() {
 	
 }
 
+//language chooser
 function changeToEnglish() {
 	console.log("language: "+ language);
 	if (language == "english"){

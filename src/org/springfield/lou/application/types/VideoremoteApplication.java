@@ -9,55 +9,78 @@ import org.json.simple.JSONObject;
 import org.springfield.fs.Fs;
 import org.springfield.fs.FsNode;
 import org.springfield.lou.application.*;
-import org.springfield.lou.application.types.controllers.AnnotationController;
 import org.springfield.lou.application.types.controllers.AudioController;
 import org.springfield.lou.application.types.controllers.HomePageController;
 import org.springfield.lou.application.types.controllers.MainscreenController;
-import org.springfield.lou.application.types.controllers.RelatedController;
 import org.springfield.lou.application.types.controllers.VideoController;
-import org.springfield.lou.application.types.controllers.VideoRemoteController;
 import org.springfield.lou.controllers.*;
 import org.springfield.lou.screen.*;
-import org.springfield.mojo.interfaces.ServiceInterface;
-import org.springfield.mojo.interfaces.ServiceManager;
 
+/**
+ * The main class of the SVIA - VideoremoteApplication to demonstrate the
+ * video/audio synchronisation of broadcast footage
+ * 
+ * it is implemented to work on the base of the Noteriks Springfield-Framework
+ * visit for more information: http://www.noterik.nl/products/webtv_framework/
+ * 
+ * @author Niels Bubel, Rundfunk Berlin-Brandenburg (RBB), Innovationsprojekte
+ * @version 7.2 - final version, 31.05.2016
+ * 
+ *
+ */
 public class VideoremoteApplication extends Html5Application {
-	double videolength = ((4 * 60) + 22) * 1000;
+	double videolength;
 	public String masterclock;
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	private Map<String, ArrayList<PathBindObject>> pathbindobjects = new HashMap<String, ArrayList<PathBindObject>>();
 
+	/**
+	 * Constructor for the class object
+	 * 
+	 * @param id
+	 *            the user/screen id
+	 */
 	public VideoremoteApplication(String id) {
 		super(id);
-		MasterClockManager.setApp(this); // tmp needed until moved to mojo
-											// shared memory
+		// tmp needed until moved to mojo shared memory
+		MasterClockManager.setApp(this); 
 	}
 
+	/**
+	 * Creates new screen by starting the application
+	 * 
+	 * there are three device-possibilities a) the remote control device for an
+	 * ipad by choosing "controller" as url-parameter "mode" b) the audio device
+	 * for an smartphone by choosing "audio" as url-parameter "mode" c) the
+	 * video device for an mainscreen as default option
+	 */
 	public void onNewScreen(Screen s) {
-		s.setLanguageCode("en");
+		s.setLanguageCode("de");
 		Capabilities cap = s.getCapabilities();
 		String mode = s.getParameter("mode");
+		// option a) loads the the remote control device on the screen
 		if (mode != null && mode.equals("controller")) {
+			// css-loading
 			loadStyleSheet(s, "controller-fonts");
 			loadStyleSheet(s, "materialize");
 			loadStyleSheet(s, "ipad");
 			s.get("#screen").append("div", "mainscreencontroller", new MainscreenController());
+
+			// option b) loads the audio device for an smartphone
 		} else if (mode != null && mode.equals("audio")) {
-			/*
-			 * (cap.getDeviceMode()==cap.MODE_IPAD_LANDSCAPE ||
-			 * cap.getDeviceMode()==cap.MODE_APHONE_PORTRAIT ||
-			 * cap.getDeviceMode()==cap.MODE_IPHONE_PORTRAIT ||
-			 * cap.getDeviceMode()==cap.MODE_APHONE_PORTRAIT)
-			 */
-				
+
+			// css-loading
 			loadStyleSheet(s, "mainscreen-fonts");
 			loadStyleSheet(s, "materialize");
 			loadStyleSheet(s, "phone");
-			// load the base html but also parse it by mustache
+
+			// load the base html but also parse it by mustache-templates
 			s.get("#screen").attach(new ScreenController());
-			s.get("#screen").append("div", "related", new RelatedController());
 			AudioController ac = new AudioController();
 			s.get("#screen").append("div", "audio1", ac);
+
+			// init the masterclock for the synchronisation of video and audio,
+			// if the screen is the audio device to play the audio
 			masterclock = s.getParameter("masterclock");
 			String master = s.getParameter("master");
 			if (masterclock != null && !masterclock.equals("")) {
@@ -68,35 +91,27 @@ public class VideoremoteApplication extends Html5Application {
 					System.out.println("WE HAVE A MASTERCLOCK " + masterclock + " and we are a slave");
 					ac.followMasterClock(masterclock);
 				}
-
 			}
-			s.get("#related").draggable();
-			s.bind("#annotations", "valueChange", "newSeekWanted", this);
 
+			// option c) loads the videoitems for playing videos on the
+			// mainscreen
 		} else {
 			System.out.println("VideoRemoteApplication: Load HomepageController!");
+			// css-loading
 			loadStyleSheet(s, "mainscreen-fonts");
 			loadStyleSheet(s, "materialize");
 			loadStyleSheet(s, "mainscreen");
 
 			// load the base html but also parse it by mustache
 			s.get("#screen").attach(new ScreenController());
-
 			s.get("#screen").append("div", "homepage", new HomePageController());
-
-			// AudioController ac = new AudioController();
-			// s.get("#screen").append("audio","audio1",ac);
-			// s.get("#screen").append("div","audio1",new AudioController());
-
+			// load the video-grid with the video items of the db
 			VideoController vc = new VideoController();
 			s.get("#screen").append("video", "video1", vc);
 			s.removeContent("video1");
 
-			s.get("#screen").append("div", "annotations", new AnnotationController());
-			s.get("#screen").append("div", "related", new RelatedController());
-			s.get("#related").draggable();
-			s.bind("#annotations", "valueChange", "newSeekWanted", this);
-
+			// init the masterclock for the synchronisation of video and audio,
+			// if the screen is the mainscreen to play the video
 			masterclock = s.getParameter("masterclock");
 			String master = s.getParameter("master");
 			if (masterclock != null && !masterclock.equals("")) {
@@ -107,31 +122,44 @@ public class VideoremoteApplication extends Html5Application {
 					System.out.println("WE HAVE A MASTERCLOCK " + masterclock + " and we are a slave");
 					vc.followMasterClock(masterclock);
 				}
-
 			}
 		}
-
 	}
 
+	/**
+	 * Jumps to another point at the video on the mainscreen
+	 * 
+	 * @param s
+	 *            screen
+	 * @param data
+	 *            the JSONObject with the update data
+	 */
 	public void newSeekWanted(Screen s, JSONObject data) {
 		try {
 			FsNode videonode = Fs.getNode("/domain/senso/tmp/videocontrollerapp/video/1");
 			videolength = videonode.getDuration();
-
 			String[] posxy = ((String) data.get("clientXY")).split(",");
 			float rx = Float.parseFloat(posxy[0]);
 			long width = (Long) data.get("width");
 			float px = ((float) rx / width);
-
 			double newtime = px * videolength;
-			// System.out.println("NEW SEEK="+newtime);
-
+			;
 			setProperty("/videostate/" + masterclock + "/newtime", "" + newtime);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Listed the screens to inform if there is an update(object)
+	 * 
+	 * @param paths
+	 *            location that should be observed
+	 * @param methodname
+	 *            name of the method
+	 * @param callbackobject
+	 *            object/function of the action that follows the update
+	 */
 	public void onPathUpdate(String paths, String methodname, Object callbackobject) {
 		System.out.println("PATHUPDATE with: " + paths + ", " + methodname + ", " + callbackobject);
 		String[] vars = paths.split(",");
@@ -148,6 +176,14 @@ public class VideoremoteApplication extends Html5Application {
 		}
 	}
 
+	/**
+	 * Sets an value at a path
+	 * 
+	 * @param path,
+	 *            the location path
+	 * @param value,
+	 *            the value
+	 */
 	public void setProperty(String path, String value) {
 		properties.put(path, value);
 
@@ -180,8 +216,14 @@ public class VideoremoteApplication extends Html5Application {
 		}
 	}
 
+	/**
+	 * Returns the saved value of some path
+	 * 
+	 * @param path
+	 *            of the value
+	 * @return value
+	 */
 	public Object getProperty(String path) {
 		return properties.get(path);
 	}
-
 }

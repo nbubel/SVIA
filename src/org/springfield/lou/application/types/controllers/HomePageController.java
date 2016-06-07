@@ -16,10 +16,20 @@ import org.springfield.lou.controllers.Html5Controller;
 import org.springfield.lou.screen.Html5Element;
 import org.springfield.lou.screen.Screen;
 
+/**
+ * @author Niels Bubel, Rundfunk Berlin-Brandenburg (RBB), Innovationsprojekte
+ * @version 7.2 - final version, 31.05.2016
+ *
+ * Controller for showing the video items on the mainscreen in a grid
+ *
+ */
 public class HomePageController extends Html5Controller {
 
 	public String masterclock;
 
+	/** 
+	 * Brings the video items from the database to the screen
+	 */
 	public void attach(String sel) {
 		System.out.println("Attach Homepagecontroller!");
 		selector = sel;
@@ -28,13 +38,9 @@ public class HomePageController extends Html5Controller {
 
 		FsListController lc = new FsListController();
 		screen.get("#homepage").attach(lc);
-
-		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false); // get
-																								// the
-																								// results
-																								// from
-																								// the
-																								// database
+		
+		// get the results from the database
+		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false); 
 		List<FsNode> nodes = fslist.getNodes();
 		if (nodes != null) {
 			for (int i = 0; i < nodes.size(); i++) {
@@ -47,29 +53,29 @@ public class HomePageController extends Html5Controller {
 			}
 		}
 
+		// Starting point for the additional feature to filter video categories
+		
 		// FsListController lc = new FsListController();
 		// lc.addFilter(this,"extendNodes");
 		// screen.get("#itemlist").attach(lc);
-
 		// public FSList extendNodes(FSList incomming) {
-
 		// FSList outgoing = new FSList();
-
 		// List<FsNode> nodes = incomming.getNodesSorted("created","UP");
-
 		// for(Iterator<FsNode> iter = nodes.iterator() ; iter.hasNext(); ) {
 		// FsNode n = (FsNode)iter.next();
-
+		
+		// registry the method onVideoUpdate for the path Update process of the folder /videostate/ (Play and stop)
 		screen.bind("#homepage", "itemselected", "itemselected", this);
 		VideoremoteApplication app = (VideoremoteApplication) screen.getApplication();
 		app.onPathUpdate("/videostate/", "onVideoUpdate", this);
-
-		// screen.get("#screen").append("div","audio1",new AudioController());
-		// VideoController vc = new VideoController();
-		// screen.get("#screen").append("video","video1",vc);
-
 	}
 
+	/**
+	 * Starting- and stop-Process of a video
+	 * 
+	 * @param path path to the node
+	 * @param node videoinformations
+	 */
 	public void onVideoUpdate(String path, FsNode node) {
 		System.out.println("Video-Update!");
 		System.out.println("node: " + node.asXML());
@@ -84,12 +90,10 @@ public class HomePageController extends Html5Controller {
 					String itemid = params[1];
 					screen.setProperty("firstVideo", 0);
 					VideoController vc = new VideoController();
-
 					screen.setProperty("requestedvideo", itemid);
 					screen.get("#screen").append("video", "video1", vc);
 					screen.get("#video1").show();
 					screen.get("#homepage").hide();
-
 				}
 				if (action.equals("closevideo")) {
 					screen.removeContent("video1");
@@ -101,20 +105,19 @@ public class HomePageController extends Html5Controller {
 		}
 	}
 
+	/**
+	 * Communicates the video that is choosed by the user on the mainscreen
+	 * 
+	 * @param s Mainscreen
+	 * @param data JSONObject
+	 */
 	public void itemselected(Screen s, JSONObject data) {
 		System.out.println("WE WANT VIDEO !! =" + data.toJSONString());
 
-		// VideoController vc = new VideoController();
-
 		screen.setProperty("requestedvideo", data.get("itemid"));
-
 		System.out.println("ItemID: " + data.get("itemid"));
-
-		// screen.get("#screen").append("video", "video1", vc);
 		screen.get("#video1").show();
-
 		screen.get("#homepage").hide();
 
 	}
-
 }

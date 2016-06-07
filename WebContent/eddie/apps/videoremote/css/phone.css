@@ -7,6 +7,10 @@ body {
 	background-size: 1024px 768px;
 }
 
+#synctime {
+	display: none;
+}
+
 table, td, th {
 	border: solid 1px silver;
 	color: #666;
@@ -369,7 +373,7 @@ h3 {
 .card .card-image .card-bg{
 	color: #000000;
 	padding: 4vw 4vw 0 4vw;
-	margin-top: 28px;
+	margin-top: 2vw;
 }
 
 .card .card-image img {
@@ -551,9 +555,9 @@ ul.rig.columns-4 li {
 
 .audio{
 	width: 100%;
-	z-index: 20;
+	/*z-index: 20;
 	margin-top: 0px;
-	position: absolute;
+	position: absolute;*/
 }
 
 #version1, #version2 {

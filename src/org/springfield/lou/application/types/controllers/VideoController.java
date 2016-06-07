@@ -10,6 +10,13 @@ import org.springfield.lou.application.types.VideoremoteApplication;
 import org.springfield.lou.controllers.Html5Controller;
 import org.springfield.lou.screen.Screen;
 
+/**
+ * @author Niels Bubel, Rundfunk Berlin-Brandenburg (RBB), Innovationsprojekte
+ * @version 7.2 - final version, 31.05.2016
+ * 
+ * the videocontroller take care that the audio on the audio-device is close to the masterclock
+ * it's the server side technic to synchronize the video and audio
+ */
 public class VideoController extends Html5Controller {
 
 	String selector;
@@ -27,6 +34,11 @@ public class VideoController extends Html5Controller {
 
 	}
 
+	/**
+	 * creates the masterclock
+	 * 
+	 * @param name masterclockname
+	 */
 	public void becomeMasterClock(String name) {
 		System.out.println("VIDEO BECOME MASTER");
 		master = true;
@@ -37,6 +49,11 @@ public class VideoController extends Html5Controller {
 
 	}
 
+	/**
+	 * Follows another masterclock
+	 * 
+	 * @param name masterclock name
+	 */
 	public void followMasterClock(String name) {
 		master = false;
 		ClockName = name;
@@ -47,6 +64,9 @@ public class VideoController extends Html5Controller {
 
 	}
 
+	/**
+	 * Brings the video on the mainscreen
+	 */
 	public void attach(String sel) {
 		System.out.println("Attach Videocontroller!");
 		System.out.println("sel: " + sel);
@@ -155,13 +175,26 @@ public class VideoController extends Html5Controller {
 
 	}
 
+	/**
+	 * Closes the video on the mainscreen
+	 * 
+	 * @param s mainscreen
+	 * @param data JSONObject with the video data
+	 */
 	public void closeVideo(Screen s, JSONObject data) {
 		System.out.println("CLOSE VIDEO");
 		screen.removeContent(selector.substring(1));
 	}
 
+	/**
+	 * gives the beat out of the masterclock
+	 * 
+	 * @param s mainscreen
+	 * @param data SONObject with the masterclock data
+	 */
 	public void currentTime(Screen s, JSONObject data) {
-		if (master) { // so i am the master need to keep master clock correct
+		if (master) { 
+			// it's the master and gives the master clock to the clients
 			VideoremoteApplication app = (VideoremoteApplication) screen.getApplication();
 			app.setProperty("/videostate/" + clock.getName() + "/currentTime", "" + data.get("currentTime"));
 			if (!clock.running()) {
@@ -173,10 +206,15 @@ public class VideoController extends Html5Controller {
 		}
 	}
 
+	/**
+	 * Masterclock-Update
+	 * 
+	 * @param path
+	 * @param node
+	 */
 	public void onClockUpdate(String path, FsNode node) {
 		String id = node.getId();
-		if (id.equals(clock.getClockName())) { // extra check since mem track
-												// model not 100% done.
+		if (id.equals(clock.getClockName())) { 
 			JSONObject nd = node.toJSONObject("en", "wantedtime");
 			nd.put("action", "wantedtime");
 			System.out.println("clock change=" + node.getProperty("wantedtime") + " for " + node.getId());
@@ -184,6 +222,12 @@ public class VideoController extends Html5Controller {
 		}
 	}
 
+	/**
+	 * For a new video that is running
+	 * 
+	 * @param path
+	 * @param node
+	 */
 	public void onVideoUpdate(String path, FsNode node) {
 		// System.out.println("Videocontroller: onVideoUpdate with node: " +
 		// node.asXML());

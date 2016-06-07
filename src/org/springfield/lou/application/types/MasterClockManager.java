@@ -1,26 +1,37 @@
 package org.springfield.lou.application.types;
 
 import java.util.HashMap;
-
-import org.springfield.lou.application.Html5Application;
 import org.springfield.lou.screen.Screen;
 
-
-
+/**
+ * @author Niels Bubel, Rundfunk Berlin-Brandenburg (RBB), Innovationsprojekte
+ * @version 7.2 - final version, 31.05.2016
+ * 
+ * Manages the masterclock thread (create, reset...) and give the information to the application
+ *
+ */
+/**
+ * @author Niels
+ *
+ */
 public class MasterClockManager {
 	
 	private static VideoremoteApplication app; // temp needed until moved to global memory in mojo
-	
 	private static HashMap<String,MasterClockThread> clocks = new HashMap<String,MasterClockThread>();
-	
 	public static Boolean createdClock = false;
+	
 	
 	public static void setApp(VideoremoteApplication a) {
 		app = a;
 	}
 	
-	
-	
+	/**
+	 * Add a new masterclock
+	 * 
+	 * @param s mainscreen
+	 * @param name clockname
+	 * @return masterclockthread
+	 */
 	public static MasterClockThread addMasterClock(Screen s,String name) {
 		System.out.println("AddMasterCLock - createdClock: " + createdClock);
 		MasterClockThread clock  = clocks.get(name);
@@ -51,6 +62,12 @@ public class MasterClockManager {
 		return clock;
 	}
 
+	/**
+	 * Get the masterclock by name
+	 * 
+	 * @param name masterclockname
+	 * @return masterclockthread
+	 */
 	public static MasterClockThread getMasterClock(String name) {
 		MasterClockThread clock  = clocks.get(name);
 		if (clock!=null) {
@@ -58,6 +75,12 @@ public class MasterClockManager {
 		}
 		return null;
 	}
+	
+	/**
+	 * Reset the masterclock by name
+	 * 
+	 * @param name masterclockname
+	 */
 	public static void resetMasterClock (String name){
 		System.out.println("reset clock with name: " + name);
 		MasterClockThread clock  = clocks.get(name);
@@ -70,6 +93,9 @@ public class MasterClockManager {
 		System.out.println("Laufende Threads: " + clocks.size());
 	}
 	
+	/**
+	 * Give an log out
+	 */
 	public static void threadControl (){
 		System.out.println("Laufende Threads: " + clocks.size());
 	}

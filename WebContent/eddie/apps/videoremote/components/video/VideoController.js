@@ -1,4 +1,15 @@
-var VideoController = function(options) {}; // needed for detection
+/* 
+ * 
+ * Niels Bubel, Rundfunk Berlin-Brandenburg (RBB), Innovationsprojekte
+ * 7.2 - final version, 31.05.2016
+ *
+ * the videocontroller take care that the video on the mainscreen is close to the masterclock
+ * it's the client side technic to synchronize the video and audio
+ * 
+ */
+
+// needed for detection
+var VideoController = function(options) {}; 
 
 VideoController.update = function(vars, data){
 	// get out targetid from our local vars
