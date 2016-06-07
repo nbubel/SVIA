@@ -18,9 +18,65 @@ public class AudioController extends Html5Controller{
 	Boolean master = false;
 	String requestedtVideo;
 	FsNode audionode;
+	String ClockName = "";
 	
 	
 	public AudioController() {
+
+	}
+	
+	public void becomeMasterClock(String name) {
+		master = true;
+		clock = MasterClockManager.addMasterClock(screen,name);
+		VideoremoteApplication app = (VideoremoteApplication)screen.getApplication();
+		app.onPathUpdate("/masterclock/","onClockUpdate",this);
+	}
+	
+	public void followMasterClock(String name) {
+		System.out.println("AUDIO FOLLOWS MASTERCLOCK");
+		master = false;
+		ClockName = name;
+		clock = MasterClockManager.getMasterClock(name);
+		System.out.println("FOLLOW CLOCK="+clock);
+		VideoremoteApplication app = (VideoremoteApplication)screen.getApplication();
+		app.onPathUpdate("/masterclock/","onClockUpdate",this);
+		
+		System.out.println("CLock: " + clock.getClockName());
+		System.out.println("CLock: " + clock);
+		
+		if (clock.running()){
+			System.out.println("Masterclock is running!");
+			if (audionode!=null) {
+				FsNode snode = Fs.getNode("/domain/senso/tmp/videocontrollerapp/video/1");
+				audionode.setProperty("mp3",snode.getProperty("mp3"));
+				audionode.setProperty("description", snode.getProperty("description"));
+				System.out.println("Audionode-MP3: " + audionode.getProperty("mp3"));
+				System.out.println("Audionode-description: " + audionode.getProperty("description"));
+				
+				JSONObject audionodeobject = audionode.toJSONObject("en","mp3,description,mp4,autoplay,controls,videolist,selected,wantedtime");
+				System.out.println("VideoNodeObject: "+audionodeobject.toJSONString());
+				
+				screen.get(selector).parsehtml(audionodeobject);
+				screen.get(selector).update(audionodeobject);
+			}
+		} else {
+			System.out.println("Masterclock isn't running!");
+			if (audionode!=null) {
+				Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "mp3", "");
+				FsNode snode = Fs.getNode("/domain/senso/tmp/videocontrollerapp/video/1");
+				audionode.setProperty("mp3",snode.getProperty("mp3"));
+				audionode.setProperty("description", snode.getProperty("description"));
+				System.out.println("Audionode-MP3: " + audionode.getProperty("mp3"));
+				audionode.setProperty("description", "Es läuft zur Zeit kein Video auf dem Mainscreen!");
+				System.out.println("Audionode-description: " + audionode.getProperty("description"));
+				
+				JSONObject audionodeobject = audionode.toJSONObject("en","mp3,description,mp4,autoplay,controls,videolist,selected,wantedtime");
+				System.out.println("VideoNodeObject: "+audionodeobject.toJSONString());
+				
+				screen.get(selector).parsehtml(audionodeobject);
+				screen.get(selector).update(audionodeobject);
+			}
+		}
 
 	}
 	
@@ -45,7 +101,8 @@ public class AudioController extends Html5Controller{
 			System.out.println("Videopath-Node: " + audiopath);
 			System.out.println(audionode.asXML());
 			
-
+			
+			
 			String url = node.getProperty("mp3url");
 			String masterclockpath = node.getProperty("masterclock");
 			requestedtVideo = "" + screen.getProperty("requestedvideo");
@@ -64,11 +121,14 @@ public class AudioController extends Html5Controller{
 		}
 		
 		VideoremoteApplication app = (VideoremoteApplication) screen.getApplication();
-		app.onPathUpdate("/videostate/", "onVideoUpdate", this);	
+		app.onPathUpdate("/videostate/", "onVideoUpdate", this);
+	
+		
 		
 	}
 	
 	public void onClockUpdate(String path,FsNode node) {
+		clock = MasterClockManager.getMasterClock(ClockName);
 		System.out.println("AudioController: onClockUpdate with node: " + node.asXML());
 		String id = node.getId();
 		if (clock != null){
@@ -84,10 +144,10 @@ public class AudioController extends Html5Controller{
 	}
 	
 	public void onVideoUpdate(String path, FsNode node) {
-		System.out.println("Audiocontroller - Video-Update!");
-		System.out.println("node: " + node.asXML());
+		//System.out.println("Audiocontroller - Video-Update!");
+		//System.out.println("node: " + node.asXML());
 		if (node!=null){
-		System.out.println("node: " + node.asXML() + "action-Prop: " + node.getProperty("action"));
+		//System.out.println("node: " + node.asXML() + "action-Prop: " + node.getProperty("action"));
 		if ((String) node.getProperty("action")!=null){
 		String[] params = ((String) node.getProperty("action")).split(",");
 		String action = params[0];
@@ -104,13 +164,13 @@ public class AudioController extends Html5Controller{
 			
 			System.out.println("Start Audio");
 			node = getControllerNode(selector);
-			System.out.println("AudioControllerNode: "+node.asXML());
+			//System.out.println("AudioControllerNode: "+node.asXML());
 	
 			
 			if (node!=null) {
 				String audiopath = node.getProperty("audionode");
 				audionode = Fs.getNode(audiopath);
-				System.out.println("Videopath-Node: " + audiopath);
+				//System.out.println("Videopath-Node: " + audiopath);
 				
 				
 				if (audionode!=null) {
@@ -134,18 +194,15 @@ public class AudioController extends Html5Controller{
 			System.out.println("Audiocontoller: Startvideo");
 		}
 		if (action.equals("closevideo")) {
-			//screen.removeContent("video1");
-			//screen.get("#homepage").show();
+
 			System.out.println("CloseAudio!");
 			Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "mp3", "");
-			//screen.get("#audio1").hide();
-			//screen.get("#source").setVariable("src", "");
-			
+
 			
 			System.out.println("Audio remove src");
 			node = getControllerNode(selector);
 			System.out.println("AudioControllerNode: "+node.asXML());
-			
+
 			if (node!=null) {
 				String audiopath = node.getProperty("audionode");
 				audionode = Fs.getNode(audiopath);

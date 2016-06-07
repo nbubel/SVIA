@@ -20,9 +20,31 @@ public class VideoController extends Html5Controller{
 	Boolean master = false;
 	String ClockName = "";
 	String requestedtVideo;
+	Boolean ClockUpdate = false;
 	
 	
 	public VideoController() {
+
+	}
+	
+	public void becomeMasterClock(String name) {
+		System.out.println("VIDEO BECOME MASTER");
+		master = true;
+		ClockName = name;
+		clock = MasterClockManager.addMasterClock(screen,name);
+		VideoremoteApplication app = (VideoremoteApplication)screen.getApplication();
+		app.onPathUpdate("/masterclock/","onClockUpdate",this);
+		
+		
+	}
+	
+	public void followMasterClock(String name) {
+		master = false;
+		ClockName = name;
+		clock = MasterClockManager.getMasterClock(name);
+		System.out.println("FOLLOW CLOCK="+clock);
+		VideoremoteApplication app = (VideoremoteApplication)screen.getApplication();
+		app.onPathUpdate("/masterclock/","onClockUpdate",this);
 
 	}
 	
@@ -99,12 +121,13 @@ public class VideoController extends Html5Controller{
 	}
 	
 	public void onVideoUpdate(String path,FsNode node) {
-		System.out.println("Videocontroller: onVideoUpdate with node: " + node.asXML());
+		//System.out.println("Videocontroller: onVideoUpdate with node: " + node.asXML());
 		String newtime = node.getProperty("newtime");
 		if (newtime!=null && !newtime.equals("")) {
 			node.setProperty("seekingvalue",newtime);
 			node.setProperty("action","seek");
 			System.out.println("Set new time to: " + newtime);
+			ClockUpdate = false;
 			try {
 				clock.seek((long)Float.parseFloat(newtime));
 			} catch(Exception e) {}
@@ -122,9 +145,19 @@ public class VideoController extends Html5Controller{
 		String[] params = ((String) node.getProperty("action")).split(",");
 		String action = params[0];
 		if (action.equals("closevideo")) {
-			System.out.println("Stop Masterclock");
-			clock = MasterClockManager.addMasterClock(screen, ClockName);
-			System.out.println("Clock is paused: " + clock.running());
+			System.out.println("Stop Masterclock - Videocontroller");
+			System.out.println("Clockupdate: " + ClockUpdate);
+			if (!ClockUpdate){
+				System.out.println("Run Clockupdate!");
+				//System.out.println("Masterclock-Reset!");
+				//MasterClockManager.resetMasterClock(ClockName);
+				clock = MasterClockManager.addMasterClock(screen, ClockName);
+				System.out.println("Clock is paused: " + clock.running());
+				ClockUpdate = true;
+				System.out.println("Clockupdate: " + ClockUpdate);
+				MasterClockManager.threadControl();
+			}
+			
 		}}else{
 			System.out.println("No action");
 		}
@@ -133,6 +166,5 @@ public class VideoController extends Html5Controller{
 		//nd.put("annotation", annotations);
 		screen.get(selector).update(nd);
 	}
-	
 
 }

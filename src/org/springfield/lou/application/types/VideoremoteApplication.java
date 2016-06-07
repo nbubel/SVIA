@@ -44,11 +44,22 @@ public class VideoremoteApplication extends Html5Application {
 				loadStyleSheet(s,"phone");
 				// load the base html but also parse it by mustache 
 				s.get("#screen").attach(new ScreenController());
-				//s.get("#screen").append("div","videoremotecontroller",new VideoRemoteController());
-				// s.get("#screen").append("div","annotations",new AnnotationController());
 				s.get("#screen").append("div","related",new RelatedController());
 				AudioController ac = new AudioController();
 				s.get("#screen").append("div","audio1",ac);
+				
+				
+			    masterclock = s.getParameter("masterclock");
+			    String master = s.getParameter("master");
+			    if (masterclock!=null && !masterclock.equals("")) {
+			    	if (master!=null && master.equals("true")) {
+			    		System.out.println("WE HAVE A MASTERCLOCK "+masterclock+" and we are the master");
+			    		ac.becomeMasterClock(masterclock);
+			    	} else {
+			    		System.out.println("WE HAVE A MASTERCLOCK "+masterclock+" and we are a slave");
+			    		ac.followMasterClock(masterclock);
+			    	}
+			    	
 			    }
 				s.get("#related").draggable();
 			    s.bind("#annotations", "valueChange", "newSeekWanted", this);
@@ -60,25 +71,26 @@ public class VideoremoteApplication extends Html5Application {
 				
 				// load the base html but also parse it by mustache 
 				s.get("#screen").attach(new ScreenController());
-				
 				s.get("#screen").append("div","homepage",new HomePageController());
-				
-				//AudioController ac = new AudioController();
-				//s.get("#screen").append("audio","audio1",ac);
-				//s.get("#screen").append("div","audio1",new AudioController());
-				
 				VideoController vc = new VideoController();
 				s.get("#screen").append("video","video1",vc);
-				//s.get("#video1").show();
-	
-				
 				s.get("#screen").append("div","annotations",new AnnotationController());
 				s.get("#screen").append("div","related",new RelatedController());
 				s.get("#related").draggable();
 			    s.bind("#annotations", "valueChange", "newSeekWanted", this);
 			    
+			   masterclock = s.getParameter("masterclock");
+			    String master = s.getParameter("master");
+			    if (masterclock!=null && !masterclock.equals("")) {
+			    	if (master!=null && master.equals("true")) {
+			    		System.out.println("WE HAVE A MASTERCLOCK "+masterclock+" and we are the master");
+			    		vc.becomeMasterClock(masterclock);
+			    	} else {
+			    		System.out.println("WE HAVE A MASTERCLOCK "+masterclock+" and we are a slave");
+			    		vc.followMasterClock(masterclock);
+			    	}
+			    }
 			}
-
     }
     
     public void newSeekWanted(Screen s,JSONObject data) {
@@ -91,10 +103,7 @@ public class VideoremoteApplication extends Html5Application {
 			long width = (Long)data.get("width");
 			float px = ((float)rx/width);
 
-    		double newtime = px*videolength;
-    		//System.out.println("NEW SEEK="+newtime);
-    		
-    		
+    		double newtime = px*videolength;    			
 
     		setProperty("/videostate/"+masterclock +"/newtime", ""+newtime);
     	} catch(Exception e) {
@@ -153,6 +162,5 @@ public class VideoremoteApplication extends Html5Application {
     public Object getProperty(String path) {
 		return properties.get(path);
     }
-
 
 }
