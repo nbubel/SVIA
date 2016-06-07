@@ -1,0 +1,9 @@
+<div id="mainscreencontroller_play">play</div>
+<div id="mainscreencontroller_close">close</div>
+<div id="mainscreencontroller_left"> < </div>
+<div id="mainscreencontroller_right"> > </div>
+<div id="mainscreencontroller_up"> A </div>
+<div id="mainscreencontroller_down"> V </div>
+<div id="mainscreencontroller_import"> Import XML-Daten </div>
+<div id="mainscreencontroller_clear"> Alle Videos löschen </div>
+<div id="mainscreencontroller_pointer"> Pointer neu setzen auf das erste Video </div>

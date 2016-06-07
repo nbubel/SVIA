@@ -3,7 +3,7 @@
 	<view id="#homepage">
 		<controller id="FsListController">
 			<template>homepage/itemlist.mst</template>
-			<fields>title,img,mp4,bordercolor</fields>
+			<fields>title,img,mp4,bordercolor,date,display</fields>
 			<mouseovercss>menumouseover</mouseovercss>
 		</controller>
 	</view>

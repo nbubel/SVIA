@@ -55,17 +55,18 @@ public class VideoremoteApplication extends Html5Application {
 				
 				
 			} else {
+				System.out.println("VideoRemoteApplication: Load HomepageController!");
 				loadStyleSheet(s,"mainscreen");
 				
 				// load the base html but also parse it by mustache 
 				s.get("#screen").attach(new ScreenController());
 				
-				s.get("#screen").append("div","homepage",new HomePageController());				
+				s.get("#screen").append("div","homepage",new HomePageController());
+	
 				s.get("#screen").append("div","annotations",new AnnotationController());
 				s.get("#screen").append("div","related",new RelatedController());
 				s.get("#related").draggable();
 			    s.bind("#annotations", "valueChange", "newSeekWanted", this);
-			   
 			    
 			}
 			
@@ -84,8 +85,7 @@ public class VideoremoteApplication extends Html5Application {
 
     		double newtime = px*videolength;
     		//System.out.println("NEW SEEK="+newtime);
-    		
-    		
+    			
 
     		setProperty("/videostate/"+masterclock +"/newtime", ""+newtime);
     	} catch(Exception e) {
@@ -94,6 +94,7 @@ public class VideoremoteApplication extends Html5Application {
     }
     
  	public void onPathUpdate(String paths,String methodname,Object callbackobject) {
+ 		System.out.println("PATHUPDATE with: " + paths + ", " + methodname + ", " + callbackobject);
 		String[] vars=paths.split(",");
 		for (int i=0;i<vars.length;i++) {
 			System.out.println("BINDPATH="+vars[i]);
@@ -111,7 +112,6 @@ public class VideoremoteApplication extends Html5Application {
     public void setProperty(String path,String value) {
    	 properties.put(path,value);
    	 
-   	 //     //results/guest1212/clientXY
    	
    	String[] parts = path.split("/"); 
    	String key = parts[1];
@@ -145,5 +145,4 @@ public class VideoremoteApplication extends Html5Application {
     public Object getProperty(String path) {
 		return properties.get(path);
     }
-
 }

@@ -1,7 +1,23 @@
-<ul>
-{{#nodes}}<li id="{{targetid}}_{{id}}" class="item_{{targetid}}">
-<div class="homepage_title"><b>{{id}}</b></div>
-<div class="homepage_info">{{title}} {{mp4}}</div>
-<img class="homepage_img" src="{{img}}" style="border: solid 3px #{{bordercolor}}" />
-</li>{{/nodes}}
-</ul>
+<div class="wrapper">
+	<div class="container">
+		<div id="three-columns" class="grid-container" style="display:block;">
+			<ul class="rig columns-3">
+				{{#nodes}}
+				{{#display}}
+					<li id="{{targetid}}_{{id}}" class="item_{{targetid}}">
+						<img class="homepage_img" src="{{img}}" style="border: solid 3px #{{bordercolor}}" />
+						<div class="homepage_title">{{date}}</div>
+						<div class="homepage_info">{{title}}</div>
+					</li>
+				{{/display}}
+				{{/nodes}}
+			</ul>
+		</div> <!--/#three-columns-->
+		
+		<hr />
+		
+		<p class="centered"><a href="#">Über das Projekt</a> | <a href="#">Impressum</a></p>
+	</div>
+	<!--/.container-->
+</div>
+<!--/.wrapper-->
