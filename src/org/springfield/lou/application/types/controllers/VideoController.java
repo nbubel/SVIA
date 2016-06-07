@@ -79,6 +79,7 @@ public class VideoController extends Html5Controller {
 					videonode.setProperty("mp4", snode.getProperty("mp4"));
 					
 					// German version
+					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "img", snode.getProperty("img"));
 					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "mp3", snode.getProperty("mp3"));
 					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "description",
 							snode.getProperty("description"));
@@ -99,6 +100,7 @@ public class VideoController extends Html5Controller {
 					
 					// englisch version
 					
+					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "img-en", snode.getProperty("img"));
 					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "mp3-en",
 							snode.getProperty("mp3-en"));
 					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "description-en",
@@ -123,6 +125,8 @@ public class VideoController extends Html5Controller {
 
 					videonode.setProperty("mp4", "");
 					videonode.setProperty("autoplay", "false");
+					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "img", snode.getProperty("img"));
+					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "img-en", snode.getProperty("img"));
 					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "mp3", snode.getProperty("mp3"));
 					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "description",
 							snode.getProperty("description"));

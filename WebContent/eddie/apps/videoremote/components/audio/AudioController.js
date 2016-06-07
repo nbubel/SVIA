@@ -3,18 +3,32 @@ var language = null;
 
 AudioController.update = function(vars, data){
 	// get out targetid from our local vars
-	var targetid = data['targetid'];
-	$("#audiop").attr('autoplay', true);
-	$("#audiop2").attr('autoplay', false);
-	$("#audiop").attr('controls',data['controls']);
-	$("#audiop2").attr('controls',data['controls']);
-	$("#" + targetid).parent().append("<div id=\"notificationbox\" style=\"position: absolute; top: 0;\"></div>");
+	//var targetid = data['targetid'];
+	//$("#audiop").attr('autoplay', true);
+	//$("#audiop2").attr('autoplay', false);
+	//$("#audiop").attr('controls',data['controls']);
+	//$("#audiop2").attr('controls',data['controls']);
+	//$("#" + targetid).parent().append("<div id=\"notificationbox\" style=\"position: absolute; top: 0;\"></div>");
 	
 	console.log("action: " + data['action']);
 	console.log("data: " + JSON.stringify(data));
 	console.log("id: " + data['targetid']);
 	console.log("autoplay: " + data['autoplay']);	
 	console.log("controls: " + data['controls']);	
+	
+	console.log(language);
+	console.log(document.getElementById("version1"));
+	
+	if (language == null && ((document.getElementById("version1")) != null) && (data['autoplay'] == "true")){
+	language = "reset";
+	changeToGerman();
+	} else if (language == "english"){
+		language = "reload";
+		changeToEnglish();
+	} else if (language == "german"){
+		language = "reload";
+		changeToGerman();
+	}
 	
 	var action = data['action'];	
 	switch (action) {
@@ -139,21 +153,18 @@ AudioController.update = function(vars, data){
 	}
 };
 
-function changeLanguage() {
+function changeToGerman() {
 	console.log("language: "+ language);
 	if (language == "german" || language == null){
-		console.log("Change Language to english!");
-		document.getElementById("languageButton").innerHTML ="german";
-		document.getElementById("version1").style.display = "none";
-		document.getElementById("version2").style.display = "block";
-		$("#audiop")[0].autoplay = false;
-		$("#audiop2")[0].autoplay = true;
-		$("#audiop")[0].pause();
-		$("#audiop2")[0].play();
-		language = "english";
+		console.log("Language is allready german!");
+		language = "german";
+		console.log("language: "+ language);
 	} else {
 		console.log("Change Language to german!");
-		document.getElementById("languageButton").innerHTML ="english";
+		document.getElementById("german").setAttribute("class", "disabled pressed waves-effect waves-light btn");
+		document.getElementById("english").setAttribute("class", "unpressed waves-effect waves-light btn");
+		document.getElementById("pic1").setAttribute("src", "http://rbb.noterik.com/eddie/apps/videoremote/img/ger_grey.png");
+		document.getElementById("pic2").setAttribute("src", "http://rbb.noterik.com/eddie/apps/videoremote/img/gb.png");
 		document.getElementById("version1").style.display = "block";
 		document.getElementById("version2").style.display = "none";
 		$("#audiop")[0].autoplay = true;
@@ -161,6 +172,31 @@ function changeLanguage() {
 		$("#audiop")[0].play();
 		$("#audiop2")[0].pause();
 		language = "german";
+		console.log("language: "+ language);
 	}
+	
+	
+}
+
+function changeToEnglish() {
+	console.log("language: "+ language);
+	if (language == "english"){
+		console.log("Language is allready english!");
+	} else {
+		console.log("Change Language to english!");
+		document.getElementById("english").setAttribute("class", "disabled pressed waves-effect waves-light btn");
+		document.getElementById("german").setAttribute("class", "unpressed waves-effect waves-light btn");
+		document.getElementById("pic1").setAttribute("src", "http://rbb.noterik.com/eddie/apps/videoremote/img/ger.png");
+		document.getElementById("pic2").setAttribute("src", "http://rbb.noterik.com/eddie/apps/videoremote/img/gb_grey.png");
+		document.getElementById("version1").style.display = "none";
+		document.getElementById("version2").style.display = "block";
+		$("#audiop")[0].autoplay = false;
+		$("#audiop2")[0].autoplay = true;
+		$("#audiop")[0].pause();
+		$("#audiop2")[0].play();
+		language = "english";
+		console.log("language: "+ language);
+	}
+	
 	
 }

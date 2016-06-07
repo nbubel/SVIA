@@ -1,23 +1,67 @@
+<div class="wrapper2">
+	<div class="container2">
+		<div class="qrCode">
+			<p>
+				Get the audio on your mobile device
+			</p>
+			<img src="http://api.qrserver.com/v1/create-qr-code/?color=000000&bgcolor=FFFFFF&data=http%3A%2F%2Frbb.noterik.com%2Flou%2Fdomain%2Fsenso%2Fuser%2Fadmin%2Fhtml5application%2Fvideoremote%3Fmasterclock%3Dtest%26mode%3Daudio&qzone=1&margin=0&size=450x450&ecc=L" alt="qr code" />
+		</div>
+	</div>
+</div>
 <div class="wrapper">
 	<div class="container">
 		<div id="three-columns" class="grid-container" style="display:block;">
 			<ul class="rig columns-3">
-				{{#nodes}}
+			{{#nodes}}
 				{{#display}}
 					<li id="{{targetid}}_{{id}}" class="item_{{targetid}}">
-						<img class="homepage_img" src="{{img}}" style="border: solid 3px #{{bordercolor}}" />
-						<div class="homepage_title">{{date}}</div>
-						<div class="homepage_info">{{title}}</div>
+						<div class="card" style="border: solid 3px #{{bordercolor}};">
+							<div class="card-image">
+								<img src="{{img}}" />
+								<div class="card-bg">
+									<div class="card-date">{{date}}</div>
+									<div class="card-title">{{title}}</div>
+								</div>
+							</div>	
+						</div>
 					</li>
 				{{/display}}
 				{{/nodes}}
 			</ul>
-		</div> <!--/#three-columns-->
+		</div>
+		<!--/#three-columns-->
 		
-		<hr />
 		
-		<p class="centered"><a href="#">Über das Projekt</a> | <a href="#">Impressum</a></p>
 	</div>
 	<!--/.container-->
 </div>
 <!--/.wrapper-->
+
+<div class="wrapper3">
+		<div class="container3">
+			<div class="sortButtons">
+				<p>
+					Filter videos by...
+				</p>
+				<a class="waves-effect waves-light btn">Border</a>
+				<a class="waves-effect waves-light btn">Escaping</a>
+				<a class="waves-effect waves-light btn">West</a>
+				<a class="waves-effect waves-light btn">East</a>
+				<a class="waves-effect waves-light btn">Everyday Life</a>
+				<a class="waves-effect waves-light btn">Politics</a>
+				<a class="waves-effect waves-light btn">Culture</a>
+				<a class="waves-effect waves-light btn">Opposition</a>
+			</div>
+		</div>
+	</div>
+
+
+  <footer class="page-footer deep-orange">
+    <div class="footer-copyright">
+      <div class="container">
+      <a target="_blank" class="white-text text-lighten-3" href="http://rbb.noterik.com/lou/domain/senso/user/admin/html5application/videoremote?mode=controller">Mainscreen Remote Control</a> |
+      <a target="_blank" class="white-text text-lighten-3" href="http://rbb-online.de/innovationsprojekte">Über das Projekt</a> | 
+      <a target="_blank" class="white-text text-lighten-3" href="http://rbb-online.de/innovationsprojekte">Impressum</a>
+      </div>
+    </div>
+  </footer>

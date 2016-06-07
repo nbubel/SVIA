@@ -50,6 +50,7 @@ public class AudioController extends Html5Controller{
 				FsNode snode = Fs.getNode("/domain/senso/tmp/videocontrollerapp/video/1");
 				
 				//german-version
+				audionode.setProperty("img",snode.getProperty("img"));
 				audionode.setProperty("mp3",snode.getProperty("mp3"));
 				audionode.setProperty("description", snode.getProperty("description"));
 				audionode.setProperty("date",snode.getProperty("date"));
@@ -65,6 +66,7 @@ public class AudioController extends Html5Controller{
 				
 				// english version
 				
+				audionode.setProperty("img-en",snode.getProperty("img"));
 				audionode.setProperty("mp3-en",snode.getProperty("mp3-en"));
 				audionode.setProperty("description-en", snode.getProperty("description-en"));
 				audionode.setProperty("date-en",snode.getProperty("date-en"));
@@ -78,7 +80,7 @@ public class AudioController extends Html5Controller{
 				System.out.println("Audionode-location: " + audionode.getProperty("location-en"));
 				System.out.println("Audionode-year: " + audionode.getProperty("year-en"));
 				
-				JSONObject audionodeobject = audionode.toJSONObject("en","title,location,date,year,mp3,description,title-en,location-en,date-en,year-en,mp3-en,description-en,mp4,autoplay,controls,videolist,selected,wantedtime");
+				JSONObject audionodeobject = audionode.toJSONObject("en","title,location,date,year,img,mp3,description,title-en,location-en,date-en,year-en,mp3-en,description-en,img-en,mp4,autoplay,controls,videolist,selected,wantedtime");
 				System.out.println("VideoNodeObject: "+audionodeobject.toJSONString());
 				
 				screen.get(selector).parsehtml(audionodeobject);
@@ -93,11 +95,12 @@ public class AudioController extends Html5Controller{
 				
 				// german version
 				audionode.setProperty("mp3",snode.getProperty("mp3"));
+				audionode.setProperty("img", "http://rbb.noterik.com/eddie/apps/videoremote/img/img_ger.jpg");
 				audionode.setProperty("description", "Es läuft zur Zeit kein Video auf dem Mainscreen!");
-				audionode.setProperty("date","XX");
-				audionode.setProperty("title", "XX");
-				audionode.setProperty("location","XX");
-				audionode.setProperty("year", "XX");
+				audionode.setProperty("date","Datum");
+				audionode.setProperty("title", "Titel");
+				audionode.setProperty("location","Ort");
+				audionode.setProperty("year", "Jahr");
 				System.out.println("Audionode-MP3: " + audionode.getProperty("mp3"));
 				System.out.println("Audionode-description: " + audionode.getProperty("description"));
 				System.out.println("Audionode-date: " + audionode.getProperty("date"));
@@ -108,11 +111,12 @@ public class AudioController extends Html5Controller{
 				// englisch version
 				
 				audionode.setProperty("mp3-en",snode.getProperty("mp3-en"));
+				audionode.setProperty("img-en", "http://rbb.noterik.com/eddie/apps/videoremote/img/img_gb.jpg");
 				audionode.setProperty("description-en", "There is no video running at the mainscreen!");
-				audionode.setProperty("date-en", "XX");
-				audionode.setProperty("title-en", "XX");
-				audionode.setProperty("location-en", "XX");
-				audionode.setProperty("year-en", "XX");
+				audionode.setProperty("date-en", "Date");
+				audionode.setProperty("title-en", "Title");
+				audionode.setProperty("location-en", "Location");
+				audionode.setProperty("year-en", "Year");
 				System.out.println("Audionode-MP3: " + audionode.getProperty("mp3-en"));
 				System.out.println("Audionode-description: " + audionode.getProperty("description-en"));
 				System.out.println("Audionode-date: " + audionode.getProperty("date-en"));
@@ -122,7 +126,7 @@ public class AudioController extends Html5Controller{
 				
 				
 				
-				JSONObject audionodeobject = audionode.toJSONObject("en","title,location,date,year,mp3,description,title-en,location-en,date-en,year-en,mp3-en,description-en,mp4,autoplay,controls,videolist,selected,wantedtime");
+				JSONObject audionodeobject = audionode.toJSONObject("en","title,location,date,year,mp3,img,img-en,description,title-en,location-en,date-en,year-en,mp3-en,description-en,mp4,autoplay,controls,videolist,selected,wantedtime");
 				System.out.println("VideoNodeObject: "+audionodeobject.toJSONString());
 				
 				screen.get(selector).parsehtml(audionodeobject);
@@ -173,7 +177,7 @@ public class AudioController extends Html5Controller{
 		}
 		
 		VideoremoteApplication app = (VideoremoteApplication) screen.getApplication();
-		app.onPathUpdate("/videostate/", "onVideoUpdate", this);
+		app.onPathUpdate("/videostate/", "onVideoUpdate", this);		
 		
 	}
 	
@@ -208,11 +212,13 @@ public class AudioController extends Html5Controller{
 			
 			System.out.println("Start Audio");
 			node = getControllerNode(selector);
+			//System.out.println("AudioControllerNode: "+node.asXML());
 	
 			
 			if (node!=null) {
 				String audiopath = node.getProperty("audionode");
 				audionode = Fs.getNode(audiopath);
+				//System.out.println("Videopath-Node: " + audiopath);
 				
 				
 				if (audionode!=null) {
@@ -223,6 +229,7 @@ public class AudioController extends Html5Controller{
 					
 					// german version
 					
+					audionode.setProperty("img",snode.getProperty("img"));
 					audionode.setProperty("mp3",snode.getProperty("mp3"));
 					audionode.setProperty("description",snode.getProperty("description"));
 					audionode.setProperty("date",snode.getProperty("date"));
@@ -239,6 +246,7 @@ public class AudioController extends Html5Controller{
 					
 					// english version
 					
+					audionode.setProperty("img-en",snode.getProperty("img"));
 					audionode.setProperty("mp3-en",snode.getProperty("mp3-en"));
 					audionode.setProperty("description-en", snode.getProperty("description-en"));
 					audionode.setProperty("date-en",snode.getProperty("date-en"));
@@ -253,7 +261,7 @@ public class AudioController extends Html5Controller{
 					System.out.println("Audionode-year: " + audionode.getProperty("year-en"));
 					
 
-					JSONObject audionodeobject = audionode.toJSONObject("en","title,location,date,year,mp3,description,title-en,location-en,date-en,year-en,mp3-en,description-en,mp4,autoplay,controls,videolist,selected,wantedtime");
+					JSONObject audionodeobject = audionode.toJSONObject("en","img,title,location,date,year,mp3,description,img-en,title-en,location-en,date-en,year-en,mp3-en,description-en,mp4,autoplay,controls,videolist,selected,wantedtime");
 					System.out.println("VideoNodeObject: "+audionodeobject.toJSONString());
 					
 					screen.get(selector).parsehtml(audionodeobject);
@@ -264,15 +272,24 @@ public class AudioController extends Html5Controller{
 			System.out.println("Audiocontoller: Startvideo");
 		}
 		if (action.equals("closevideo")) {
+			//screen.removeContent("video1");
+			//screen.get("#homepage").show();
 			System.out.println("CloseAudio!");
 			Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "mp3", "");
 			Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "mp3-en", "");
+			Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "img", "http://rbb.noterik.com/eddie/apps/videoremote/img/img_ger.jpg");
+			Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1", "img-en", "http://rbb.noterik.com/eddie/apps/videoremote/img/img_gb.jpg");
+			//screen.get("#audio1").hide();
+			//screen.get("#source").setVariable("src", "");
 			
 			
 			System.out.println("Audio remove src");
 			node = getControllerNode(selector);
 			System.out.println("AudioControllerNode: "+node.asXML());
 			
+		
+			//System.out.println("Masterclock-Reset!");
+			//MasterClockManager.resetMasterClock(ClockName);
 			
 			if (node!=null) {
 				String audiopath = node.getProperty("audionode");
@@ -288,11 +305,13 @@ public class AudioController extends Html5Controller{
 					
 					// german version
 					audionode.setProperty("mp3",snode.getProperty("mp3"));
+					audionode.setProperty("img",snode.getProperty("img"));
 					audionode.setProperty("description", "Es läuft zur Zeit kein Video auf dem Mainscreen!");
-					audionode.setProperty("date","XX");
-					audionode.setProperty("title", "XX");
-					audionode.setProperty("location","XX");
-					audionode.setProperty("year", "XX");
+					audionode.setProperty("date","Datum");
+					audionode.setProperty("title", "Titel");
+					audionode.setProperty("location","Ort");
+					audionode.setProperty("year", "Jahr");
+					System.out.println("Audionode-IMG: " + audionode.getProperty("img"));
 					System.out.println("Audionode-MP3: " + audionode.getProperty("mp3"));
 					System.out.println("Audionode-description: " + audionode.getProperty("description"));
 					System.out.println("Audionode-date: " + audionode.getProperty("date"));
@@ -303,11 +322,13 @@ public class AudioController extends Html5Controller{
 					// englisch version
 					
 					audionode.setProperty("mp3-en",snode.getProperty("mp3-en"));
+					audionode.setProperty("img-en",snode.getProperty("img-en"));
 					audionode.setProperty("description-en", "There is no video running at the mainscreen!");
-					audionode.setProperty("date-en", "XX");
-					audionode.setProperty("title-en", "XX");
-					audionode.setProperty("location-en", "XX");
-					audionode.setProperty("year-en", "XX");
+					audionode.setProperty("date-en", "Date");
+					audionode.setProperty("title-en", "Title");
+					audionode.setProperty("location-en", "Location");
+					audionode.setProperty("year-en", "Year");
+					System.out.println("Audionode-IMG: " + audionode.getProperty("img-en"));
 					System.out.println("Audionode-MP3: " + audionode.getProperty("mp3-en"));
 					System.out.println("Audionode-description: " + audionode.getProperty("description-en"));
 					System.out.println("Audionode-date: " + audionode.getProperty("date-en"));
@@ -315,7 +336,7 @@ public class AudioController extends Html5Controller{
 					System.out.println("Audionode-location: " + audionode.getProperty("location-en"));
 					System.out.println("Audionode-year: " + audionode.getProperty("year-en"));
 					
-					JSONObject audionodeobject = audionode.toJSONObject("en","title,location,date,year,mp3,description,title-en,location-en,date-en,year-en,mp3-en,description-en,mp4,autoplay,controls,videolist,selected,wantedtime");
+					JSONObject audionodeobject = audionode.toJSONObject("en","title,location,date,year,img,img-en,mp3,description,title-en,location-en,date-en,year-en,mp3-en,description-en,mp4,autoplay,controls,videolist,selected,wantedtime");
 					System.out.println("VideoNodeObject: "+audionodeobject.toJSONString());
 					
 					screen.get(selector).parsehtml(audionodeobject);

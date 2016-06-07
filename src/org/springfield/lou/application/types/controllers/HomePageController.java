@@ -47,10 +47,26 @@ public class HomePageController extends Html5Controller {
 			}
 		}
 
+		// FsListController lc = new FsListController();
+		// lc.addFilter(this,"extendNodes");
+		// screen.get("#itemlist").attach(lc);
+
+		// public FSList extendNodes(FSList incomming) {
+
+		// FSList outgoing = new FSList();
+
+		// List<FsNode> nodes = incomming.getNodesSorted("created","UP");
+
+		// for(Iterator<FsNode> iter = nodes.iterator() ; iter.hasNext(); ) {
+		// FsNode n = (FsNode)iter.next();
 
 		screen.bind("#homepage", "itemselected", "itemselected", this);
 		VideoremoteApplication app = (VideoremoteApplication) screen.getApplication();
 		app.onPathUpdate("/videostate/", "onVideoUpdate", this);
+
+		// screen.get("#screen").append("div","audio1",new AudioController());
+		// VideoController vc = new VideoController();
+		// screen.get("#screen").append("video","video1",vc);
 
 	}
 
@@ -98,5 +114,7 @@ public class HomePageController extends Html5Controller {
 		screen.get("#video1").show();
 
 		screen.get("#homepage").hide();
+
 	}
+
 }

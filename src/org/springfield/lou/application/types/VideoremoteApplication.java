@@ -38,6 +38,8 @@ public class VideoremoteApplication extends Html5Application {
 		Capabilities cap = s.getCapabilities();
 		String mode = s.getParameter("mode");
 		if (mode != null && mode.equals("controller")) {
+			loadStyleSheet(s, "controller-fonts");
+			loadStyleSheet(s, "materialize");
 			loadStyleSheet(s, "ipad");
 			s.get("#screen").append("div", "mainscreencontroller", new MainscreenController());
 		} else if (mode != null && mode.equals("audio")) {
@@ -47,13 +49,15 @@ public class VideoremoteApplication extends Html5Application {
 			 * cap.getDeviceMode()==cap.MODE_IPHONE_PORTRAIT ||
 			 * cap.getDeviceMode()==cap.MODE_APHONE_PORTRAIT)
 			 */
+				
+			loadStyleSheet(s, "mainscreen-fonts");
+			loadStyleSheet(s, "materialize");
 			loadStyleSheet(s, "phone");
 			// load the base html but also parse it by mustache
 			s.get("#screen").attach(new ScreenController());
 			s.get("#screen").append("div", "related", new RelatedController());
 			AudioController ac = new AudioController();
 			s.get("#screen").append("div", "audio1", ac);
-
 			masterclock = s.getParameter("masterclock");
 			String master = s.getParameter("master");
 			if (masterclock != null && !masterclock.equals("")) {
@@ -77,7 +81,12 @@ public class VideoremoteApplication extends Html5Application {
 
 			// load the base html but also parse it by mustache
 			s.get("#screen").attach(new ScreenController());
+
 			s.get("#screen").append("div", "homepage", new HomePageController());
+
+			// AudioController ac = new AudioController();
+			// s.get("#screen").append("audio","audio1",ac);
+			// s.get("#screen").append("div","audio1",new AudioController());
 
 			VideoController vc = new VideoController();
 			s.get("#screen").append("video", "video1", vc);
@@ -98,8 +107,10 @@ public class VideoremoteApplication extends Html5Application {
 					System.out.println("WE HAVE A MASTERCLOCK " + masterclock + " and we are a slave");
 					vc.followMasterClock(masterclock);
 				}
+
 			}
 		}
+
 	}
 
 	public void newSeekWanted(Screen s, JSONObject data) {

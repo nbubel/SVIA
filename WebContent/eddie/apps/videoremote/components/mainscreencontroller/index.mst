@@ -1,9 +1,66 @@
-<div id="mainscreencontroller_play">play</div>
-<div id="mainscreencontroller_close">close</div>
-<div id="mainscreencontroller_left"> < </div>
-<div id="mainscreencontroller_right"> > </div>
-<div id="mainscreencontroller_up"> A </div>
-<div id="mainscreencontroller_down"> V </div>
-<div id="mainscreencontroller_import"> Import XML-Daten </div>
-<div id="mainscreencontroller_clear"> Alle Videos löschen </div>
-<div id="mainscreencontroller_pointer"> Pointer neu setzen auf das erste Video </div>
+<div class="wrapper">
+	<div class="container">
+		<div id="three-columns" class="grid-container" style="display:block;">
+			<ul class="rig columns-3">
+				<li class="blank">
+				</li>
+				<li>
+					<div id="mainscreencontroller_up" class="threeItems waves-effect waves-light btn">
+			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/arrow_upward.svg">
+		</div>
+				</li>
+				<li class="blank">
+				</li>
+				<li>
+					<div id="mainscreencontroller_left" class="threeItems waves-effect waves-light btn">
+			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/arrow_back.svg">
+		</div>
+				</li>
+				<li>
+					<div onclick="togglePlay()" id="mainscreencontroller_play" class="threeItems waves-effect waves-light btn">
+			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/play.svg">
+		</div>
+				</li>
+				<li style="display: none;">
+					<div onclick="togglePlay()" id="mainscreencontroller_close" class="threeItems waves-effect waves-light btn">
+			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/stop.svg">
+		</div>
+				</li>
+				<li>
+					<div id="mainscreencontroller_right" class="threeItems waves-effect waves-light btn">
+			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/arrow_forward.svg">
+		</div>
+				</li>
+				<li class="blank">
+				</li>
+				<li>
+					<div id="mainscreencontroller_down" class="threeItems waves-effect waves-light btn">
+			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/arrow_downward.svg">
+		</div>
+				</li>
+				<li class="blank">
+				</li>
+				<li class="special">
+					<div id="mainscreencontroller_pointer" class="threeItems waves-effect waves-light btn deep-orange darken-4">
+					<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/loop.svg">
+		</div>
+				</li>
+				<li class="special">
+					<div id="mainscreencontroller_import" class="threeItems waves-effect waves-light btn deep-orange darken-4">
+			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/import_export.svg">
+		</div>
+				</li>
+				<li class="special">
+					<div id="mainscreencontroller_clear" class="threeItems waves-effect waves-light btn deep-orange darken-4">
+			<img alt="reload" src="http://rbb.noterik.com/eddie/apps/videoremote/img/delete.svg">
+		</div>
+				</li>
+			</ul>
+		</div>
+		<!--/#three-columns-->
+		
+		
+	</div>
+	<!--/.container-->
+</div>
+<!--/.wrapper-->

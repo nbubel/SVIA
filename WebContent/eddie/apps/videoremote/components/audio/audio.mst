@@ -1,19 +1,47 @@
-<button id="languageButton" onclick="changeLanguage()">english</button>
+<div id="languageButton" class="sortButtons">
+		<div id="german" class="pressed waves-effect waves-light btn disabled" onclick="changeToGerman()">
+			<img id="pic1" src="http://rbb.noterik.com/eddie/apps/videoremote/img/ger_grey.png"> Deutsch
+		</div>
+		<div id="english" class="unpressed waves-effect waves-light btn" onclick="changeToEnglish()">
+			<img id="pic2" src="http://rbb.noterik.com/eddie/apps/videoremote/img/gb.png"> English
+		</div>
+	</div>
 
-<div id="version1">
-<audio id="audiop" controls>
-  <source src="{{mp3}}" type="audio/mp4">
-</audio>
-<h3>Video-Informationen</h3>
-<p>{{title}} vom {{date}} am Ort {{location}}</p>
-<p>{{description}}</p>
-</div>
+	<div id="version1">
+		
+		<div class="card" style="border: 3px solid rgb(255, 255, 255);">
+			<div class="card-image">
+				<img src="{{img}}" />
+				<audio id="audiop" class="audio" controls>
+					<source src="{{mp3}}" type="audio/mp4">
+				</audio>
+					
+				<div class="card-bg">
+					<div class="card-date">{{date}}  |  {{location}}</div> 
+					<div class="card-title">{{title}}</div>
+				</div>
+				<div class="card-content">
+					<p>{{description}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
 
-<div id="version2" style="display: none;">
-<audio id="audiop2" controls>
-  <source src="{{mp3-en}}" type="audio/mp4">
-</audio>
-<h3>Video-Informationen</h3>
-<p>{{title-en}} vom {{date-en}} am Ort {{location-en}}</p>
-<p>{{description-en}}</p>
-</div>
+	<div id="version2">
+		<div class="card" style="border: 3px solid rgb(255, 255, 255);">
+			<div class="card-image">
+				<img src="{{img-en}}" />
+				<audio id="audiop2" class="audio" controls>
+					<source src="{{mp3-en}}" type="audio/mp4">
+				</audio>
+					
+				<div class="card-bg">
+					<div class="card-date">{{date-en}}  |  {{location-en}}</div> 
+					<div class="card-title">{{title-en}}</div>
+				</div>
+				<div class="card-content">
+					<p>{{description-en}}</p>
+				</div>
+			</div>
+		</div>
+	</div>

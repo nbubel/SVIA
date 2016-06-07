@@ -11,6 +11,7 @@
 	<view id="#mainscreencontroller">
 		<template>mainscreencontroller/index.mst</template>
 		<controller id="MainscreenController">
+			<javascript>mainscreencontroller/MainscreenController.js</javascript>
 		</controller>
 	</view>
 	<view id="#screen">

@@ -32,11 +32,14 @@ public class MainscreenController extends Html5Controller {
 	FSList fsStart = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false);
 	List<FsNode> nodesStart = fsStart.getNodes();
 	int sizeStart = fsStart.size();
+	
+	
 
 	public void attach(String sel) {
 		selector = sel;
 		JSONObject data = new JSONObject();
 		screen.get(selector).parsehtml(data);
+		screen.get(selector).loadScript(this);
 		screen.get("#mainscreencontroller_play").on("mouseup", "startVideo", this);
 		screen.get("#mainscreencontroller_close").on("mouseup", "closeVideo", this);
 		screen.get("#mainscreencontroller_import").on("mouseup", "importXML", this);
@@ -82,7 +85,7 @@ public class MainscreenController extends Html5Controller {
 		// Version1: without mp3 -
 		// webapps/ROOT/eddie/apps/videoremote/img/20160229-wall-videos-german.xml
 		// webapps/ROOT/eddie/apps/videoremote/img/201600318-wall-videos-german.xml
-		File file = new File("webapps/ROOT/eddie/apps/videoremote/img/20160408-wall-videos2.xml");
+		File file = new File("webapps/ROOT/eddie/apps/videoremote/img/20160419-wall-videos.xml");
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = null;
