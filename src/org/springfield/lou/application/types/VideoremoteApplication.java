@@ -39,17 +39,17 @@ public class VideoremoteApplication extends Html5Application {
 			if (mode!=null && mode.equals("controller")) {
 				loadStyleSheet(s,"ipad");
 				s.get("#screen").append("div","mainscreencontroller",new MainscreenController());
-			} else if (cap.getDeviceMode()==cap.MODE_IPAD_LANDSCAPE || cap.getDeviceMode()==cap.MODE_APHONE_PORTRAIT || cap.getDeviceMode()==cap.MODE_IPHONE_PORTRAIT || cap.getDeviceMode()==cap.MODE_APHONE_PORTRAIT) {
+			} else if (mode!=null && mode.equals("audio")){
+			/*(cap.getDeviceMode()==cap.MODE_IPAD_LANDSCAPE || cap.getDeviceMode()==cap.MODE_APHONE_PORTRAIT || cap.getDeviceMode()==cap.MODE_IPHONE_PORTRAIT || cap.getDeviceMode()==cap.MODE_APHONE_PORTRAIT)*/ 
 				loadStyleSheet(s,"phone");
 				// load the base html but also parse it by mustache 
 				s.get("#screen").attach(new ScreenController());
-				s.get("#screen").append("div","videoremotecontroller",new VideoRemoteController());
-				s.get("#screen").append("div","annotations",new AnnotationController());
+				//s.get("#screen").append("div","videoremotecontroller",new VideoRemoteController());
+				// s.get("#screen").append("div","annotations",new AnnotationController());
 				s.get("#screen").append("div","related",new RelatedController());
 				AudioController ac = new AudioController();
 				s.get("#screen").append("div","audio1",ac);
-
-				
+			    }
 				s.get("#related").draggable();
 			    s.bind("#annotations", "valueChange", "newSeekWanted", this);
 				
@@ -62,14 +62,22 @@ public class VideoremoteApplication extends Html5Application {
 				s.get("#screen").attach(new ScreenController());
 				
 				s.get("#screen").append("div","homepage",new HomePageController());
+				
+				//AudioController ac = new AudioController();
+				//s.get("#screen").append("audio","audio1",ac);
+				//s.get("#screen").append("div","audio1",new AudioController());
+				
+				VideoController vc = new VideoController();
+				s.get("#screen").append("video","video1",vc);
+				//s.get("#video1").show();
 	
+				
 				s.get("#screen").append("div","annotations",new AnnotationController());
 				s.get("#screen").append("div","related",new RelatedController());
 				s.get("#related").draggable();
 			    s.bind("#annotations", "valueChange", "newSeekWanted", this);
 			    
 			}
-			
 
     }
     
@@ -85,7 +93,8 @@ public class VideoremoteApplication extends Html5Application {
 
     		double newtime = px*videolength;
     		//System.out.println("NEW SEEK="+newtime);
-    			
+    		
+    		
 
     		setProperty("/videostate/"+masterclock +"/newtime", ""+newtime);
     	} catch(Exception e) {
@@ -111,7 +120,6 @@ public class VideoremoteApplication extends Html5Application {
  	
     public void setProperty(String path,String value) {
    	 properties.put(path,value);
-   	 
    	
    	String[] parts = path.split("/"); 
    	String key = parts[1];
@@ -145,4 +153,6 @@ public class VideoremoteApplication extends Html5Application {
     public Object getProperty(String path) {
 		return properties.get(path);
     }
+
+
 }

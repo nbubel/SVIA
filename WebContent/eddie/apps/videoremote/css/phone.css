@@ -1,0 +1,268 @@
+body {
+	background-color:#888888;
+	-webkit-background-size: 1024px 768px;
+	-moz-background-size: 1024px 768px;
+	-o-background-size: 1024px 768px;
+	background-size: 1024px 768px;
+}
+
+
+table,
+td,
+th {
+  border: solid 1px silver;
+  color:#666;
+  padding:5px;
+  font-size:12pt;
+  text-align: center;
+  }
+table {
+  border-collapse:collapse;
+  width: 100%;
+  }
+table tr {
+  background-color:#eee;
+  }
+
+table td, table th{
+    border:1px solid #fff;
+    }
+    
+ th {
+  background-color:#336;
+  color:#fff;
+  }
+  
+
+#videoremotecontroller {
+  	padding:0px;
+	color: #ffffff;
+	left: 0px;
+	right: 0px;
+	width:100%;
+}
+
+
+#remoteplay {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  background-color: #3498DB;
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 6px 10px 6px 10px;
+  text-decoration: none;
+  width: 100px;
+  margin: 0 auto;
+  margin-top: 5%;
+  text-align: center;
+}
+
+#remotepause {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  background-color: #3498DB;
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 6px 10px 6px 10px;
+  text-decoration: none;
+  width: 100px;
+  margin: 0 auto;
+  margin-top: 5%;
+  text-align: center;
+}
+
+#remoteautoplay {
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  background-color: #3498DB;
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 6px 10px 6px 10px;
+  text-decoration: none;
+  width: 100px;
+  margin: 0 auto;
+  margin-top: 5%;
+  text-align: center;
+}
+
+#remoteseek {
+  position: absolute;
+  top: 40%;
+  left:10%;
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  background-color: #3498DB;
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 6px 10px 6px 10px;
+  text-decoration: none;
+  margin: 0 auto;
+  margin-top: 5%;
+  text-align: center;
+  width: 200px;
+}
+
+#volume-range {
+ position: absolute;
+  top: 48%;
+  left:10%;
+}
+
+#remotevolume {
+  position: absolute;
+  top: 50%;
+  left:10%;
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  background-color: #3498DB;
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 6px 10px 6px 10px;
+  text-decoration: none;
+  margin: 0 auto;
+  margin-top: 5%;
+  text-align: center;
+  width: 200px;
+}
+
+#remoteprevious {
+  position: absolute;
+  top: 60%;
+  left:10%;
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  background-color: #3498DB;
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 6px 10px 6px 10px;
+  text-decoration: none;
+  margin: 0 auto;
+  margin-top: 5%;
+  text-align: center;
+  width: 100px;
+}
+#remotenext {
+  position: absolute;
+  top: 60%;
+  left:57%;
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  background-color: #3498DB;
+  -webkit-border-radius: 6;
+  -moz-border-radius: 6;
+  border-radius: 6px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 16px;
+  padding: 6px 10px 6px 10px;
+  text-decoration: none;
+  margin: 0 auto;
+  margin-top: 5%;
+  text-align: center;
+  width: 100px;
+}
+
+#annotations {
+	position:absolute;
+	padding:0px;
+	border-radius: 3px;
+	background-color:#4444aa;
+	height:20px;
+	bottom:10%;
+	left: 0px;
+	right: 0px;
+}
+
+.annotationblock {
+	position:absolute;
+	border-radius: 3px;
+	background-color:#6666cc;
+	height:14px;
+	bottom:3px;
+}
+
+.annotationslider {
+	position:absolute;
+	border-radius: 3px;
+	background-color:#ffffff;
+	height:16px;
+	left:0px;
+	width:6px;
+	bottom:2px;
+	margin-left: -3px;
+}
+
+#related {
+	position:absolute;
+	padding:0px;
+	border-radius: 6px;
+	background-color:#6666cc;
+	border: solid 2px #4444aa;
+	opacity: 0.8;
+	display: none;
+	height:40%;
+	bottom:30%;
+	left: 20%;
+	width: 60%;
+}

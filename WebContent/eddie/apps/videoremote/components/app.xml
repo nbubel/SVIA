@@ -28,14 +28,25 @@
 		</controller>
 	</view>
 	
+	<view id="#video2">
+		<template>video.mst</template>
+		<controller id="VideoController">			
+			<javascript>VideoController.js</javascript>
+			<videonode>/domain/senso/tmp/videocontrollerapp/video/1</videonode>
+			<masterclock>/domain/senso/tmp/videocontrollerapp/videostatus/1</masterclock>
+		</controller>
+	</view>
+	
 	<view id="#audio1">
 		<template>audio/audio.mst</template>
 		<controller id="AudioController">			
 			<javascript>audio/AudioController.js</javascript>
-			<mp3url>http://images1.noterik.com/rbb/rbb_synctest_aeng.mp3</mp3url>
+			<mp3url>x.mp3</mp3url>
+			<audionode>/domain/senso/tmp/videocontrollerapp/video/1</audionode>
 			<masterclock>/domain/senso/tmp/videocontrollerapp/videostatus/1</masterclock>
 		</controller>
 	</view>
+	
 	
 	<view id="#related">
 		<template>RelatedController.mst</template>

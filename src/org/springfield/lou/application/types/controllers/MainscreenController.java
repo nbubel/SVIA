@@ -26,6 +26,12 @@ import org.xml.sax.SAXException;
 
 public class MainscreenController extends Html5Controller{
 	
+	FSList fsPointer;
+	List<FsNode> nodesPointer;
+	private int selectedItemID = -1;
+	FSList fsStart = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false);
+	List<FsNode> nodesStart = fsStart.getNodes();
+	int sizeStart = fsStart.size();
 	
 	public void attach(String sel) {
 		selector = sel;
@@ -40,6 +46,9 @@ public class MainscreenController extends Html5Controller{
 	 	screen.get("#mainscreencontroller_right").on("mouseup", "goNext", this);
 	 	screen.get("#mainscreencontroller_up").on("mouseup", "goUp", this);
 	 	screen.get("#mainscreencontroller_down").on("mouseup", "goDown", this);
+	 	System.out.println("Pointer: " + selectedItemID);
+	 	screen.setProperty("requestedvideo", selectedItemID);
+		System.out.println("Set Property Requested Video: " + screen.getProperty("requestedvideo"));
 	 
 	}
 	
@@ -64,11 +73,13 @@ public class MainscreenController extends Html5Controller{
 		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false); 
 		
 		List<FsNode> nodes = fslist.getNodes();
+		List<FsNode> nodes2;
 		for(int i=0;i<nodes.size();i++ ) {
 			System.out.println("Node " + i + ": " + nodes.get(i).asXML());
 		}
 		
-		File file = new File("webapps/ROOT/eddie/apps/videoremote/img/20160229-wall-videos-german.xml");
+		// Version1: without mp3 - webapps/ROOT/eddie/apps/videoremote/img/20160229-wall-videos-german.xml
+		File file = new File("webapps/ROOT/eddie/apps/videoremote/img/201600318-wall-videos-german.xml");
 
 		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -104,6 +115,12 @@ public class MainscreenController extends Html5Controller{
 			node.setProperty("date", doc.getElementsByTagName("datum").item(i).getTextContent());
 			node.setProperty("img", doc.getElementsByTagName("img").item(i).getTextContent());
 			node.setProperty("mp4", doc.getElementsByTagName("mp4").item(i).getTextContent());
+			node.setProperty("mp3", doc.getElementsByTagName("mp3").item(i).getTextContent());
+			node.setProperty("duration", doc.getElementsByTagName("dauer").item(i).getTextContent());
+			node.setProperty("categories", doc.getElementsByTagName("kategorien").item(i).getTextContent());
+			node.setProperty("description", doc.getElementsByTagName("beschreibung").item(i).getTextContent());
+			node.setProperty("location", doc.getElementsByTagName("ort").item(i).getTextContent());
+			node.setProperty("year", doc.getElementsByTagName("jahr").item(i).getTextContent());
 			node.setId("" + (nodes.size()+1));
 			System.out.println("created new node: " + node.asXML());
 			
@@ -117,6 +134,20 @@ public class MainscreenController extends Html5Controller{
 			boolean inserted = org.springfield.fs.Fs.insertNode(nodes.get(i), "/domain/senso/user/rbb/collection/homepage");
 			System.out.println("Insertion succsessfull?: " + inserted);	
 		}
+		
+		
+		FSList fslist2 = new FSList();
+		
+		FsNode node2 = new FsNode("pointer");
+		node2.setProperty("selectedID", "-1" );
+		node2.setId("1");
+		System.out.println("created new pointer-node: " + node2.asXML());
+		
+		fslist2.addNode(node2);
+		nodes2 = fslist2.getNodes();
+		
+		boolean insertedID = org.springfield.fs.Fs.insertNode(nodes2.get(0), "/domain/senso/user/rbb/collection/pointer");
+		System.out.println("Insertion Pointer: " + insertedID);
 		
 		/*
 		System.out.println("Put fslist to DB");
@@ -146,6 +177,7 @@ public class MainscreenController extends Html5Controller{
 				if (bordercolor!=null && bordercolor.equals("ffff00")) {
 					VideoremoteApplication app = (VideoremoteApplication)screen.getApplication();
 					app.setProperty("/videostate/"+app.masterclock +"/action", "startvideo,"+(i+1));
+					app.setProperty("/videostate/"+app.masterclock +"/newtime", "0");
 				}
 			}
 		}
@@ -159,138 +191,145 @@ public class MainscreenController extends Html5Controller{
     public void setPointer(Screen s,JSONObject data) {
     	System.out.println("Set pointer to the first video");
     	FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage",false); // get the results from the database
-		List<FsNode> nodes = fslist.getNodes();
-		int selectedItemID = -1;
+    	List<FsNode> nodes = fslist.getNodes();
+    	fsStart = fslist;
+    	nodesStart = nodes;
+    	sizeStart = nodes.size();
 		if (nodes!=null) { 
 			for(int i=0;i<nodes.size();i++ ) {
 				if (i == 0) {
 					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/1","bordercolor","ffff00");
+					selectedItemID = 0;
+					screen.setProperty("requestedvideo", selectedItemID);
+					Fs.setProperty("/domain/senso/tmp/videocontrollerapp/video/1","mp3", ""+selectedItemID);
+					System.out.println("Set Property Requested Video: " + screen.getProperty("requestedvideo"));
+					Fs.setProperty("/domain/senso/user/rbb/collection/pointer/pointer/1","selectedID", selectedItemID + "");
+					System.out.println("SelectedVideo: " + selectedItemID);
 				} else {
 					// System.out.println("Set Bordercolor:  at Node: "+ i);
 					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(i+1),"bordercolor","");
 				}
 			}
 		}
-		blockView9(selectedItemID, nodes.size());
+		blockView9(selectedItemID-1, nodes.size(), false);
     } 
     
     
 
 	
-    public void goPrev(Screen s,JSONObject data) {
-    	System.out.println("PREV!!");
-    	// System.out.println("PREV!! ="+data.toJSONString());
-    	FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage",false); // get the results from the database
-		List<FsNode> nodes = fslist.getNodes();
-		int selectedItemID = -1;
-		if (nodes!=null) { 
-			for(int i=0;i<nodes.size();i++ ) {
-				FsNode node = nodes.get(i);
-				// System.out.println("NODE="+node.asXML());
-				String bordercolor = node.getProperty("bordercolor");
-				if (bordercolor!=null && bordercolor.equals("ffff00")) {
-					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(i+1),"bordercolor","");
-					if (i==0) {
-						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+nodes.size(),"bordercolor","ffff00");
-						selectedItemID = nodes.size();
-					} else {
-						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(i),"bordercolor","ffff00");
-						selectedItemID = i;
-					}
-				} 
+	public void goPrev(Screen s, JSONObject data) {
+		System.out.println("PREV!!");
+		// System.out.println("PREV!! ="+data.toJSONString());
+		fsPointer = FSListManager.get("/domain/senso/user/rbb/collection/pointer", false);
+		nodesPointer = fsPointer.getNodes();
+		selectedItemID = Integer.parseInt(nodesPointer.get(0).getProperty("selectedID"));
+		if (selectedItemID != -1) {
+			System.out.println("Selected Item: " + selectedItemID);
+			Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (selectedItemID + 1), "bordercolor",
+					"");
+			if (selectedItemID == 0) {
+				Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + sizeStart, "bordercolor",
+						"ffff00");
+				selectedItemID = sizeStart;
+				Fs.setProperty("/domain/senso/user/rbb/collection/pointer/pointer/1","selectedID", sizeStart + "");
+				System.out.println("Selected Item: " + selectedItemID);
+				screen.setProperty("requestedvideo", selectedItemID);
+				System.out.println("Set Property Requested Video: " + screen.getProperty("requestedvideo"));
+			} else {
+				Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/" + (selectedItemID), "bordercolor",
+						"ffff00");
+				selectedItemID--;
+				Fs.setProperty("/domain/senso/user/rbb/collection/pointer/pointer/1","selectedID", (selectedItemID) + "");
+				System.out.println("Selected Item: " + selectedItemID);
+				screen.setProperty("requestedvideo", selectedItemID);
+				System.out.println("Set Property Requested Video: " + screen.getProperty("requestedvideo"));
 			}
-			blockView9(selectedItemID, nodes.size());
 		}
-    }
+		blockView9(selectedItemID+1, sizeStart, false);
+	}
     
     public void goNext(Screen s,JSONObject data) {
     	System.out.println("NEXT !!");
     	// System.out.println("NEXT !! ="+data.toJSONString());
-		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage",false); // get the results from the database
-		List<FsNode> nodes = fslist.getNodes();
-		int selectedItemID = -1;
-		if (nodes!=null) { 
-			for(int i=0;i<nodes.size();i++ ) {
-				FsNode node = nodes.get(i);
-				// System.out.println("NODE="+node.asXML());
-				String bordercolor = node.getProperty("bordercolor");
-				if (bordercolor!=null && bordercolor.equals("ffff00")) {
-					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(i+1),"bordercolor","");
-					if ((i+2)>nodes.size()) {
+    	fsPointer = FSListManager.get("/domain/senso/user/rbb/collection/pointer", false);
+		nodesPointer = fsPointer.getNodes();
+		selectedItemID = Integer.parseInt(nodesPointer.get(0).getProperty("selectedID"));
+		if (selectedItemID != -1) {
+			System.out.println("Selected Item: " + selectedItemID);
+			Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(selectedItemID + 1),"bordercolor","");
+					if ((selectedItemID + 2)>sizeStart) {
 						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/1","bordercolor","ffff00");
-						selectedItemID = 1;
+						selectedItemID = 0;
+						Fs.setProperty("/domain/senso/user/rbb/collection/pointer/pointer/1","selectedID", "0");
+						System.out.println("Selected Item: " + selectedItemID);
+						screen.setProperty("requestedvideo", selectedItemID);
+						System.out.println("Set Property Requested Video: " + screen.getProperty("requestedvideo"));
 					} else {
-						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(i+2),"bordercolor","ffff00");
-						selectedItemID = i+2;
+						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(selectedItemID + 2),"bordercolor","ffff00");
+						selectedItemID++;
+						Fs.setProperty("/domain/senso/user/rbb/collection/pointer/pointer/1","selectedID", selectedItemID + "");
+						System.out.println("Selected Item: " + selectedItemID);
+						screen.setProperty("requestedvideo", selectedItemID);
+						System.out.println("Set Property Requested Video: " + screen.getProperty("requestedvideo"));
 					}
 				}
-			}
-			blockView9(selectedItemID, nodes.size());
+			
+			blockView9(selectedItemID+1, sizeStart, true);
 		}
-    }
     
     
     public void goDown(Screen s,JSONObject data) {
     	System.out.println("DOWN !!");
     	// System.out.println("DOWN !! ="+data.toJSONString());
-		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage",false); // get the results from the database
-		List<FsNode> nodes = fslist.getNodes();
-		int selectedItemID = -1;
-		if (nodes!=null) { 
-			for(int i=0;i<nodes.size();i++ ) {
-				FsNode node = nodes.get(i);
-				// System.out.println("NODE="+node.asXML());
-				String bordercolor = node.getProperty("bordercolor");
-				if (bordercolor!=null && bordercolor.equals("ffff00")) {
-					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(i+1),"bordercolor","");
+    	fsPointer = FSListManager.get("/domain/senso/user/rbb/collection/pointer", false);
+		nodesPointer = fsPointer.getNodes();
+		selectedItemID = Integer.parseInt(nodesPointer.get(0).getProperty("selectedID"));
+		
+				if (selectedItemID != -1) {
+					System.out.println("Selected Item: " + selectedItemID);
+					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(selectedItemID+1),"bordercolor","");
 					// System.out.println("node-size:" + nodes.size());
-					if ((i+4)>nodes.size()) {
+					if ((selectedItemID+4) > sizeStart) {
 						//System.out.println("jump to start");
-						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(2-((nodes.size()-2)-i)),"bordercolor","ffff00");
-						selectedItemID = 2-((nodes.size()-2)-i);
+						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(2-((sizeStart-2)-selectedItemID)),"bordercolor","ffff00");
+						selectedItemID = 1-((sizeStart-2) - selectedItemID);
+						Fs.setProperty("/domain/senso/user/rbb/collection/pointer/pointer/1","selectedID", selectedItemID + "");
+						System.out.println("Selected Item: " + selectedItemID);
 						//System.out.println("Go to video:" + (2-((nodes.size()-2)-i)));
 					} else {
-						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(i+4),"bordercolor","ffff00");
-						selectedItemID = i+4;
+						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(selectedItemID+4),"bordercolor","ffff00");
+						selectedItemID = selectedItemID + 3;
+						Fs.setProperty("/domain/senso/user/rbb/collection/pointer/pointer/1","selectedID", selectedItemID + "");
+						System.out.println("Selected Item: " + selectedItemID);
 					}
-				}
 			}
-			blockView9(selectedItemID, nodes.size());
-		}
+			blockView9(selectedItemID+1, sizeStart, true);
     }
     
     public void goUp (Screen s,JSONObject data) {
     	System.out.println("UP !!");
     	// System.out.println("DOWN !! ="+data.toJSONString());
-		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage",false); // get the results from the database
-		List<FsNode> nodes = fslist.getNodes();
-		int selectedItemID = -1;
-		if (nodes!=null) { 
-			for(int i=0;i<nodes.size();i++ ) {
-				FsNode node = nodes.get(i);
-				// System.out.println("NODE="+node.asXML());
-				String bordercolor = node.getProperty("bordercolor");
-				if (bordercolor!=null && bordercolor.equals("ffff00")) {
-					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(i+1),"bordercolor","");
-					if ((i-3)<0) {
-						if (i == 0){
-							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(nodes.size()-2),"bordercolor","ffff00");
-							selectedItemID = nodes.size()-2;
-						} else {
-							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(nodes.size()-(2-i)),"bordercolor","ffff00");
-							selectedItemID = nodes.size()-(2-i);
-						}
+    	fsPointer = FSListManager.get("/domain/senso/user/rbb/collection/pointer", false);
+		nodesPointer = fsPointer.getNodes();
+		selectedItemID = Integer.parseInt(nodesPointer.get(0).getProperty("selectedID"));
+				if (selectedItemID != -1) {
+					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(selectedItemID+1),"bordercolor","");
+					if ((selectedItemID-4)<0) {
+							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+((sizeStart + (-3 + selectedItemID)+1)),"bordercolor","ffff00");
+							selectedItemID = sizeStart + (-3 + selectedItemID);
+							Fs.setProperty("/domain/senso/user/rbb/collection/pointer/pointer/1","selectedID", selectedItemID + "");
+							System.out.println("Selected Item: " + selectedItemID);
 					} else {
-						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(i-2),"bordercolor","ffff00");
-						selectedItemID = i-2;
+						Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(selectedItemID-2),"bordercolor","ffff00");
+						selectedItemID = selectedItemID-3;
+						Fs.setProperty("/domain/senso/user/rbb/collection/pointer/pointer/1","selectedID", selectedItemID + "");
+						System.out.println("Selected Item: " + selectedItemID);
 					}
 				}
-			}
-			blockView9(selectedItemID, nodes.size());
-		}
+			blockView9(selectedItemID+1, sizeStart, false);
     }
     
-public static void blockView9(int selectedItem, int itemNumbers){
+public static void blockView9(int selectedItem, int itemNumbers, boolean down){
 		
     	
     	// Grid-Part-View of 9 items ------ Start
@@ -324,9 +363,9 @@ public static void blockView9(int selectedItem, int itemNumbers){
 					
 				}
 				
-				if (selectedItemID == 0 || selectedItemID == 1 || selectedItemID == 2 || selectedItemID == 3){
-					System.out.println("First Row, Item: " + selectedItemID);
-				for (int j = selectedItemID-3; j < selectedItemID+10; j++) {
+				if (selectedItemID >= 0 && selectedItemID <= 6){
+					System.out.println("First two Rows, Item: " + selectedItemID);
+				for (int j = selectedItemID-7; j < selectedItemID+10; j++) {
 					if (selectedItemID > -1 && j > 8) {
 						System.out.println("Hide node: " + j);
 						// org.springfield.fs.Fs.insertNode(nodes.get(j), "/domain/senso/user/rbb/collection/homepage");
@@ -339,14 +378,14 @@ public static void blockView9(int selectedItem, int itemNumbers){
 					}
 				} 
 				for (int k = size-9; k < size; k++) {
-					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(k+1),"display","");	
+					Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(k+1),"display","");
 				}
 				
 				return;
 				}
 				
-				if (selectedItemID == size || selectedItemID == size-1  || selectedItemID == size-2){
-					System.out.println("Last Row, Item: " + selectedItemID);
+				if (selectedItemID <= size+1 && selectedItemID >= size-9){
+					System.out.println("Last two Rows, Item: " + selectedItemID);
 				for (int j = size-9; j < size; j++) {
 					if (selectedItemID > -1 && j < (size-9)) {
 						System.out.println("Hide node: " + j);
@@ -366,10 +405,10 @@ public static void blockView9(int selectedItem, int itemNumbers){
 				}
 					
 
-				if (selectedItemID % 3 == 1) {
-					System.out.println("Left column: " + selectedItemID % 3);
+				if (selectedItemID % 3 == 1 && down) {
+					System.out.println("Left column, down: " + selectedItemID % 3);
 					for (int j = selectedItemID-10; j < selectedItemID+10; j++) {
-						if (selectedItemID > -1 && selectedItemID < size && (j < (selectedItemID - 4)) || (j > (selectedItemID + 4))) {
+						if (selectedItemID > -1 && selectedItemID < size && (j < (selectedItemID - 7)) || (j > (selectedItemID + 1))) {
 							System.out.println("Hide node: " + j);
 							// org.springfield.fs.Fs.insertNode(nodes.get(j), "/domain/senso/user/rbb/collection/homepage");
 							//org.springfield.fs.Fs.deleteNode("/domain/senso/user/rbb/collection/homepage/video/"+(j+1)+"/properties/hidden");
@@ -380,10 +419,10 @@ public static void blockView9(int selectedItem, int itemNumbers){
 							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","true");						
 						}
 					}
-				} else if (selectedItemID % 3 == 2) {
-					System.out.println("Center column: " + selectedItemID % 3);
-					for (int j = selectedItemID-10; j < selectedItemID+10; j++) {
-						if (selectedItemID > -1 && selectedItemID < size && (j < (selectedItemID - 5)) || (j > (selectedItemID + 3))) {
+				} else if (selectedItemID % 3 == 2 && down) {
+					System.out.println("Center column, down: " + selectedItemID % 3);
+					for (int j = selectedItemID-12; j < selectedItemID+10; j++) {
+						if (selectedItemID > -1 && selectedItemID < size && (j < (selectedItemID - 8)) || (j > (selectedItemID + 0))) {
 							System.out.println("Hide node: " + j);
 							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","");
 						} else {
@@ -391,10 +430,10 @@ public static void blockView9(int selectedItem, int itemNumbers){
 							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","true");						
 						}
 					}
-				} else if (selectedItemID % 3 == 0) {
-					System.out.println("right column: " + selectedItemID % 3);
-					for (int j = selectedItemID-10; j < selectedItemID+10; j++) {
-						if (selectedItemID > -1 && selectedItemID < size && (j < (selectedItemID - 6)) || (j > (selectedItemID + 2))) {
+				} else if (selectedItemID % 3 == 0 && down) {
+					System.out.println("right column, down: " + selectedItemID % 3);
+					for (int j = selectedItemID-12; j < selectedItemID+10; j++) {
+						if (selectedItemID > -1 && selectedItemID < size && (j < (selectedItemID - 9)) || (j > (selectedItemID - 1))) {
 							System.out.println("Hide node: " + j);
 							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","");
 						} else {
@@ -402,11 +441,50 @@ public static void blockView9(int selectedItem, int itemNumbers){
 							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","true");						
 						}
 					}
-				} else {
+				} else if (selectedItemID % 3 == 1 && !down) {
+					System.out.println("Left column, up: " + selectedItemID % 3);
+					for (int j = selectedItemID-10; j < selectedItemID+15; j++) {
+						if (selectedItemID > -1 && selectedItemID < size+1 && (j < (selectedItemID -1 )) || (j > (selectedItemID + 7))) {
+							System.out.println("Hide node: " + j);
+							// org.springfield.fs.Fs.insertNode(nodes.get(j), "/domain/senso/user/rbb/collection/homepage");
+							//org.springfield.fs.Fs.deleteNode("/domain/senso/user/rbb/collection/homepage/video/"+(j+1)+"/properties/hidden");
+							//Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(nodes.size()-(2-i)),"bordercolor","ffff00");
+							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","");
+						} else {
+							System.out.println("Display node: " + j);
+							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","true");						
+						}
+					}
+				} else if (selectedItemID % 3 == 2 && !down) {
+					System.out.println("Center column, up: " + selectedItemID % 3);
+					for (int j = selectedItemID-10; j < selectedItemID+15; j++) {
+						if (selectedItemID > -1 && selectedItemID < size+1 && (j < (selectedItemID - 2)) || (j > (selectedItemID + 6))) {
+							System.out.println("Hide node: " + j);
+							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","");
+						} else {
+							System.out.println("Display node: " + j);
+							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","true");						
+						}
+					}
+				} else if (selectedItemID % 3 == 0 && !down) {
+					System.out.println("right up: " + selectedItemID % 3);
+					for (int j = selectedItemID-10; j < selectedItemID+15; j++) {
+						if (selectedItemID > -1 && selectedItemID < size+1 && (j < (selectedItemID - 3)) || (j > (selectedItemID + 5))) {
+							System.out.println("Hide node: " + j);
+							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","");
+						} else {
+							System.out.println("Display node: " + j);
+							Fs.setProperty("/domain/senso/user/rbb/collection/homepage/video/"+(j+1),"display","true");						
+						}
+					}
+				}
+					
+					else {
 					System.out.println("No matching: selectedtItem % 3: " + (selectedItemID % 3));
 				}
 
 				// Grid-Part-View of 9 items ------- End
+    
 
     }
     
