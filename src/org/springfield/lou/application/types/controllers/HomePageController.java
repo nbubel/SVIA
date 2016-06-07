@@ -17,7 +17,7 @@ import org.springfield.lou.screen.Html5Element;
 import org.springfield.lou.screen.Screen;
 
 public class HomePageController extends Html5Controller {
-	
+
 	public String masterclock;
 
 	public void attach(String sel) {
@@ -28,20 +28,25 @@ public class HomePageController extends Html5Controller {
 
 		FsListController lc = new FsListController();
 		screen.get("#homepage").attach(lc);
-		
-		
-		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage",false); // get the results from the database
+
+		FSList fslist = FSListManager.get("/domain/senso/user/rbb/collection/homepage", false); // get
+																								// the
+																								// results
+																								// from
+																								// the
+																								// database
 		List<FsNode> nodes = fslist.getNodes();
-		if (nodes!=null) { 
-			for(int i=0;i<nodes.size();i++ ) {
+		if (nodes != null) {
+			for (int i = 0; i < nodes.size(); i++) {
 				FsNode node = nodes.get(i);
 				String bordercolor = node.getProperty("bordercolor");
-				if (bordercolor!=null && bordercolor.equals("ffff00")) {
-					screen.setProperty("requestedvideo", i+1);
+				if (bordercolor != null && bordercolor.equals("ff5722")) {
+					screen.setProperty("requestedvideo", i + 1);
+					screen.setProperty("firstVideo", 1);
 				}
 			}
 		}
-		
+
 
 		screen.bind("#homepage", "itemselected", "itemselected", this);
 		VideoremoteApplication app = (VideoremoteApplication) screen.getApplication();
@@ -52,38 +57,46 @@ public class HomePageController extends Html5Controller {
 	public void onVideoUpdate(String path, FsNode node) {
 		System.out.println("Video-Update!");
 		System.out.println("node: " + node.asXML());
-		if (node!=null){
-		System.out.println("node: " + node.asXML() + "action-Prop: " + node.getProperty("action"));
-		if ((String) node.getProperty("action")!=null){
-		String[] params = ((String) node.getProperty("action")).split(",");
-		String action = params[0];
-		if (action == null)
-			return;
-		if (action.equals("startvideo")) {
-			String itemid = params[1];
-			VideoController vc = new VideoController();
+		if (node != null) {
+			System.out.println("node: " + node.asXML() + "action-Prop: " + node.getProperty("action"));
+			if ((String) node.getProperty("action") != null) {
+				String[] params = ((String) node.getProperty("action")).split(",");
+				String action = params[0];
+				if (action == null)
+					return;
+				if (action.equals("startvideo")) {
+					String itemid = params[1];
+					screen.setProperty("firstVideo", 0);
+					VideoController vc = new VideoController();
 
-			screen.setProperty("requestedvideo", itemid);
-			screen.get("#screen").append("video", "video1", vc);
-			screen.get("#video1").show();
-			screen.get("#homepage").hide();
-			
-		}
-		if (action.equals("closevideo")) {
-			screen.removeContent("video1");
-			screen.get("#homepage").show();
-		}
-		} else {
-			System.out.println("No action!");
-		}
+					screen.setProperty("requestedvideo", itemid);
+					screen.get("#screen").append("video", "video1", vc);
+					screen.get("#video1").show();
+					screen.get("#homepage").hide();
+
+				}
+				if (action.equals("closevideo")) {
+					screen.removeContent("video1");
+					screen.get("#homepage").show();
+				}
+			} else {
+				System.out.println("No action!");
+			}
 		}
 	}
 
 	public void itemselected(Screen s, JSONObject data) {
-		System.out.println("WE WANT VIDEO !! =" + data.toJSONString());		
+		System.out.println("WE WANT VIDEO !! =" + data.toJSONString());
+
+		// VideoController vc = new VideoController();
+
 		screen.setProperty("requestedvideo", data.get("itemid"));
+
 		System.out.println("ItemID: " + data.get("itemid"));
+
+		// screen.get("#screen").append("video", "video1", vc);
 		screen.get("#video1").show();
-		screen.get("#homepage").hide();	
+
+		screen.get("#homepage").hide();
 	}
 }

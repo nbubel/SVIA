@@ -1,0 +1,19 @@
+<button id="languageButton" onclick="changeLanguage()">english</button>
+
+<div id="version1">
+<audio id="audiop" controls>
+  <source src="{{mp3}}" type="audio/mp4">
+</audio>
+<h3>Video-Informationen</h3>
+<p>{{title}} vom {{date}} am Ort {{location}}</p>
+<p>{{description}}</p>
+</div>
+
+<div id="version2" style="display: none;">
+<audio id="audiop2" controls>
+  <source src="{{mp3-en}}" type="audio/mp4">
+</audio>
+<h3>Video-Informationen</h3>
+<p>{{title-en}} vom {{date-en}} am Ort {{location-en}}</p>
+<p>{{description-en}}</p>
+</div>

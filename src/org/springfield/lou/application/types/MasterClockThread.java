@@ -19,6 +19,8 @@ public class MasterClockThread extends Thread {
 		master = s;
 		app = a;
 		name = n;
+	//	running = true;
+	//	start();
 	}
     
 	public void run() {
